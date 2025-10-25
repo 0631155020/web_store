@@ -86,3 +86,11 @@
     "path": "/uploads/a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6.jpg"
   }
   ```
+to build with docker 
+```bush
+docker-compose up --build
+```
+to delete container
+```bush
+docker-compose down
+```
