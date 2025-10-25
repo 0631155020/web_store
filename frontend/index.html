@@ -10,6 +10,9 @@
 
     <header>
         <h1>Галерея Одежды</h1>
+        <div class="cart-icon" id="cartIcon">
+            🛒 <span id="cartCount">0</span>
+        </div>
     </header>
 
     <main>
@@ -18,6 +21,7 @@
             <form id="uploadForm">
                 <input type="file" id="fileInput" name="file" accept="image/*" required>
                 <input type="text" id="descriptionInput" name="description" placeholder="Описание (необязательно)">
+                <input type="number" id="priceInput" name="price" placeholder="Цена" required min="0" step="0.01">
                 <button type="submit">Загрузить</button>
             </form>
         </section>
@@ -29,6 +33,17 @@
             </div>
         </section>
     </main>
+
+    <!-- Модальное окно корзины (скрыто по умолчанию) -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Корзина</h2>
+            <div id="cartItems"></div>
+            <p><strong>Итого:</strong> $<span id="cartTotal">0.00</span></p>
+            <button id="checkoutButton">Оформить заказ</button>
+        </div>
+    </div>
 
     <script src="/static/js/script.js"></script>
 </body>
