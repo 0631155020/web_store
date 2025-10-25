@@ -21,10 +21,11 @@ app.add_middleware(
 )
 
 # --- Пути к файлам и директориям ---
-BASE_DIR = Path(__file__).parent.parent
-DATA_DIR = BASE_DIR / "data"
-UPLOADS_DIR = BASE_DIR / "uploads"
-FRONTEND_DIR = BASE_DIR / "frontend"
+# Определяем базовую директорию относительно текущего файла
+BASE_DIR = Path(__file__).parent
+DATA_DIR = BASE_DIR.parent / "data"
+UPLOADS_DIR = BASE_DIR.parent / "uploads"
+FRONTEND_DIR = BASE_DIR.parent / "frontend"
 PHOTOS_JSON_PATH = DATA_DIR / "photos.json"
 
 # --- Создание директорий, если их нет ---
