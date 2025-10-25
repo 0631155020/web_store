@@ -21,11 +21,11 @@ app.add_middleware(
 )
 
 # --- Пути к файлам и директориям ---
-# Определяем базовую директорию относительно текущего файла
-BASE_DIR = Path(__file__).parent
-DATA_DIR = BASE_DIR.parent / "data"
-UPLOADS_DIR = BASE_DIR.parent / "uploads"
-FRONTEND_DIR = BASE_DIR.parent / "frontend"
+# Определяем пути относительно расположения скрипта main.py внутри контейнера (/app)
+SCRIPT_DIR = Path(__file__).parent
+DATA_DIR = SCRIPT_DIR / "data"
+UPLOADS_DIR = SCRIPT_DIR / "uploads"
+FRONTEND_DIR = SCRIPT_DIR / "frontend"
 PHOTOS_JSON_PATH = DATA_DIR / "photos.json"
 
 # --- Создание директорий, если их нет ---
