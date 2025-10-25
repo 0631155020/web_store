@@ -47,7 +47,7 @@ class Photo(BaseModel):
     filename: str
     description: Optional[str] = None
     path: str
-    price: float
+    price: Optional[float] = 0.0
 
 # --- Функции для работы с данными ---
 def read_photos_db() -> List[dict]:
