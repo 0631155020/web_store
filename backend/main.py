@@ -47,6 +47,7 @@ class Photo(BaseModel):
     filename: str
     description: Optional[str] = None
     path: str
+    price: float
 
 # --- Функции для работы с данными ---
 def read_photos_db() -> List[dict]:
@@ -59,7 +60,11 @@ def write_photos_db(data: List[dict]):
 
 # --- Эндпоинты API ---
 @app.post("/photos", response_model=Photo)
-async def upload_photo(description: Optional[str] = None, file: UploadFile = File(...)):
+async def upload_photo(
+    description: Optional[str] = None,
+    price: float = 0.0,
+    file: UploadFile = File(...)
+):
     photos = read_photos_db()
     file_extension = Path(file.filename).suffix
     unique_filename = f"{uuid.uuid4()}{file_extension}"
@@ -73,6 +78,7 @@ async def upload_photo(description: Optional[str] = None, file: UploadFile = Fil
         filename=file.filename,
         description=description,
         path=f"/uploads/{unique_filename}",
+        price=price
     )
 
     photos.append(new_photo.dict())
