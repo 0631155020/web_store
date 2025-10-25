@@ -10,8 +10,11 @@ COPY ./backend/requirements.txt /app/
 # --- Установка зависимостей ---
 RUN pip install --no-cache-dir -r requirements.txt
 
-# --- Копирование кода приложения ---
+# --- Копирование кода бэкенда ---
 COPY ./backend /app/
+
+# --- Копирование кода фронтенда ---
+COPY ./frontend /app/frontend
 
 # --- Указание порта и команды для запуска ---
 EXPOSE 8000

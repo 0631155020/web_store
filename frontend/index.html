@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Галерея Одежды</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Галерея Одежды</h1>
+    </header>
+
+    <main>
+        <section class="upload-form">
+            <h2>Загрузить новое фото</h2>
+            <form id="uploadForm">
+                <input type="file" id="fileInput" name="file" accept="image/*" required>
+                <input type="text" id="descriptionInput" name="description" placeholder="Описание (необязательно)">
+                <button type="submit">Загрузить</button>
+            </form>
+        </section>
+
+        <section class="gallery">
+            <h2>Галерея</h2>
+            <div id="galleryContainer" class="gallery-container">
+                <!-- Фотографии будут загружены сюда с помощью JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
