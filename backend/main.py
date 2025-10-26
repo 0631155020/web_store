@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -97,6 +97,25 @@ def get_photo_by_id(photo_id: str):
     if not photo:
         raise HTTPException(status_code=404, detail="Photo not found")
     return photo
+
+@app.delete("/photos/{photo_id}", status_code=200)
+def delete_photo(photo_id: str):
+    photos = read_photos_db()
+    photo_to_delete = next((p for p in photos if p["id"] == photo_id), None)
+
+    if not photo_to_delete:
+        raise HTTPException(status_code=404, detail="Photo not found")
+
+    # Удаляем файл изображения
+    file_path = SCRIPT_DIR.parent / photo_to_delete['path'].strip("/")
+    if file_path.exists():
+        file_path.unlink()
+
+    # Удаляем запись о фото из базы данных
+    updated_photos = [p for p in photos if p["id"] != photo_id]
+    write_photos_db(updated_photos)
+
+    return JSONResponse(content={"message": "Photo deleted successfully"})
 
 @app.get("/uploads/{filename}")
 async def get_uploaded_file(filename: str):
