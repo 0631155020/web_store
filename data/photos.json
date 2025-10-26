@@ -16,5 +16,33 @@
         "filename": "20200205_164929.jpg",
         "description": "swimming team dumps",
         "path": "/uploads/5dbc36a4-c833-43c9-8f26-b82f31694fd7.jpg"
+    },
+    {
+        "id": "02caafc1-9677-4c4b-adb2-7e7c744222fb",
+        "filename": "20200304_121717.jpg",
+        "description": "smth",
+        "path": "/uploads/58eb39c1-cd4e-4d1d-ad31-8b28c160fef4.jpg",
+        "price": 0.0
+    },
+    {
+        "id": "fc60773e-f962-4d98-84e3-2ea300859ec6",
+        "filename": "20200513_203624.jpg",
+        "description": "",
+        "path": "/uploads/5d36d466-d5c8-49c5-9b98-17ed7efe39f4.jpg",
+        "price": 0.0
+    },
+    {
+        "id": "c8766756-67aa-4e86-809e-8bfa5581e210",
+        "filename": "20200205_164931.jpg",
+        "description": "some product",
+        "path": "/uploads/223090d9-7618-4c26-932f-5e03b4356440.jpg",
+        "price": 50.0
+    },
+    {
+        "id": "bf172da6-889b-4cbb-8ad7-d2354b111a8f",
+        "filename": "20200619_204334.jpg",
+        "description": "",
+        "path": "/uploads/02321de9-b068-447e-962f-613f6f0295b1.jpg",
+        "price": 78.0
     }
 ]
