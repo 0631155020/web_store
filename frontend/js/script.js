@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p>${photo.description || 'Без описания'}</p>
                         <p class="price">$${photo.price.toFixed(2)}</p>
                         <button class="add-to-cart-btn" data-id="${photo.id}">Добавить в корзину</button>
+                        <button class="delete-btn" data-id="${photo.id}">Удалить</button>
                     </div>
                 `;
 
@@ -48,8 +49,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
 
+            // Добавляем обработчики для кнопок удаления
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const photoId = button.dataset.id;
+                    deletePhoto(photoId);
+                });
+            });
+
         } catch (error) {
             console.error('Ошибка при загрузке фото:', error);
+        }
+    };
+
+    // --- Функция для удаления фото ---
+    const deletePhoto = async (photoId) => {
+        if (!confirm('Вы уверены, что хотите удалить это фото?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/photos/${photoId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Ошибка при удалении');
+            }
+
+            // Перезагружаем галерею
+            fetchAndDisplayPhotos();
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Не удалось удалить фото.');
         }
     };
 
