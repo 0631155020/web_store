@@ -1,9 +1,11 @@
 import json
+import secrets
 import uuid
 from pathlib import Path
 from typing import List, Optional
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, status
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -40,6 +42,23 @@ if not PHOTOS_JSON_PATH.exists():
 # --- Монтирование статических файлов ---
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
+security = HTTPBasic()
+
+# --- Hardcoded credentials ---
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "password"
+
+def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
+    correct_username = secrets.compare_digest(credentials.username, ADMIN_USERNAME)
+    correct_password = secrets.compare_digest(credentials.password, ADMIN_PASSWORD)
+    if not (correct_username and correct_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return credentials.username
+
 
 # --- Модели Pydantic ---
 class Photo(BaseModel):
@@ -63,7 +82,8 @@ def write_photos_db(data: List[dict]):
 async def upload_photo(
     description: Optional[str] = None,
     price: float = 0.0,
-    file: UploadFile = File(...)
+    file: UploadFile = File(...),
+    username: str = Depends(get_current_username)
 ):
     photos = read_photos_db()
     file_extension = Path(file.filename).suffix
@@ -99,7 +119,7 @@ def get_photo_by_id(photo_id: str):
     return photo
 
 @app.delete("/photos/{photo_id}", status_code=200)
-def delete_photo(photo_id: str):
+def delete_photo(photo_id: str, username: str = Depends(get_current_username)):
     photos = read_photos_db()
     photo_to_delete = next((p for p in photos if p["id"] == photo_id), None)
 
@@ -127,4 +147,8 @@ async def get_uploaded_file(filename: str):
 # --- Эндпоинт для отдачи главной страницы ---
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
-    return FileResponse(FRONTEND_DIR / "index.html")
+    return FileResponse(FRONTEND_DIR / "home.html")
+
+@app.get("/admin", response_class=HTMLResponse)
+async def read_admin(username: str = Depends(get_current_username)):
+    return FileResponse(FRONTEND_DIR / "admin.html")
