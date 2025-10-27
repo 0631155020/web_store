@@ -1,11 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Элементы DOM ---
     const galleryContainer = document.getElementById('galleryContainer');
-    const uploadForm = document.getElementById('uploadForm');
-    const fileInput = document.getElementById('fileInput');
-    const descriptionInput = document.getElementById('descriptionInput');
-    const priceInput = document.getElementById('priceInput');
-
     const cartIcon = document.getElementById('cartIcon');
     const cartCount = document.getElementById('cartCount');
     const cartModal = document.getElementById('cartModal');
@@ -33,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p>${photo.description || 'Без описания'}</p>
                         <p class="price">$${photo.price.toFixed(2)}</p>
                         <button class="add-to-cart-btn" data-id="${photo.id}">Добавить в корзину</button>
-                        <button class="delete-btn" data-id="${photo.id}">Удалить</button>
                     </div>
                 `;
 
@@ -49,39 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
 
-            // Добавляем обработчики для кнопок удаления
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    const photoId = button.dataset.id;
-                    deletePhoto(photoId);
-                });
-            });
-
         } catch (error) {
             console.error('Ошибка при загрузке фото:', error);
-        }
-    };
-
-    // --- Функция для удаления фото ---
-    const deletePhoto = async (photoId) => {
-        if (!confirm('Вы уверены, что хотите удалить это фото?')) {
-            return;
-        }
-
-        try {
-            const response = await fetch(`/photos/${photoId}`, {
-                method: 'DELETE',
-            });
-
-            if (!response.ok) {
-                throw new Error('Ошибка при удалении');
-            }
-
-            // Перезагружаем галерею
-            fetchAndDisplayPhotos();
-        } catch (error) {
-            console.error('Ошибка:', error);
-            alert('Не удалось удалить фото.');
         }
     };
 
@@ -112,35 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Обновляем итоговую сумму
         cartTotal.textContent = total.toFixed(2);
     };
-
-    // --- Обработчик отправки формы ---
-    uploadForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const file = fileInput.files[0];
-        const description = descriptionInput.value;
-        const price = priceInput.value;
-
-        if (!file || !price) {
-            alert('Пожалуйста, выберите файл и укажите цену.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const uploadURL = `/photos?description=${encodeURIComponent(description)}&price=${price}`;
-
-        try {
-            const response = await fetch(uploadURL, { method: 'POST', body: formData });
-            if (!response.ok) throw new Error('Ошибка загрузки');
-
-            uploadForm.reset();
-            await fetchAndDisplayPhotos();
-        } catch (error) {
-            console.error('Ошибка:', error);
-            alert('Не удалось загрузить файл.');
-        }
-    });
 
     // --- Управление модальным окном ---
     cartIcon.addEventListener('click', () => cartModal.style.display = 'block');
