@@ -1,5 +1,19 @@
 [
     {
+        "id": "1",
+        "filename": "item1.jpg",
+        "description": "Coffee Brake",
+        "path": "/uploads/fake1.jpg",
+        "price": 1000.00
+    },
+    {
+        "id": "2",
+        "filename": "item2.jpg",
+        "description": "Продать",
+        "path": "/uploads/fake2.jpg",
+        "price": 500.00
+    }
+]
         "id": "3c0c3c50-1635-4df2-b61e-aec562d9483a",
         "filename": "20220918_122728.jpg",
         "description": "",
