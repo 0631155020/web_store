@@ -6,6 +6,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      - ${PWD}/backend:/app/backend
+      - ${PWD}/frontend:/app/frontend
       - ${PWD}/uploads:/app/uploads
       - ${PWD}/data:/app/data
     environment:

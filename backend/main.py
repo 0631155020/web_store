@@ -23,11 +23,11 @@ app.add_middleware(
 )
 
 # --- Пути к файлам и директориям ---
-# Определяем пути относительно расположения скрипта main.py внутри контейнера (/app)
-SCRIPT_DIR = Path(__file__).parent
-DATA_DIR = SCRIPT_DIR / "data"
-UPLOADS_DIR = SCRIPT_DIR / "uploads"
-FRONTEND_DIR = SCRIPT_DIR / "frontend"
+# Определяем пути относительно корня проекта (/app)
+APP_DIR = Path("/app")
+DATA_DIR = APP_DIR / "data"
+UPLOADS_DIR = APP_DIR / "uploads"
+FRONTEND_DIR = APP_DIR / "frontend"
 PHOTOS_JSON_PATH = DATA_DIR / "photos.json"
 
 # --- Создание директорий, если их нет ---
@@ -127,7 +127,7 @@ def delete_photo(photo_id: str, username: str = Depends(get_current_username)):
         raise HTTPException(status_code=404, detail="Photo not found")
 
     # Удаляем файл изображения
-    file_path = SCRIPT_DIR.parent / photo_to_delete['path'].strip("/")
+    file_path = APP_DIR / photo_to_delete['path'].strip("/")
     if file_path.exists():
         file_path.unlink()
 
@@ -144,11 +144,19 @@ async def get_uploaded_file(filename: str):
         raise HTTPException(status_code=404, detail="File not found")
     return FileResponse(file_path)
 
-# --- Эндпоинт для отдачи главной страницы ---
+# --- Эндпоинты для отдачи HTML страниц ---
 @app.get("/", response_class=HTMLResponse)
-async def read_root():
+async def read_home():
+    return FileResponse(FRONTEND_DIR / "home.html")
+
+@app.get("/home.html", response_class=HTMLResponse)
+async def read_home_alias():
     return FileResponse(FRONTEND_DIR / "home.html")
 
 @app.get("/admin", response_class=HTMLResponse)
 async def read_admin(username: str = Depends(get_current_username)):
+    return FileResponse(FRONTEND_DIR / "admin.html")
+
+@app.get("/admin.html", response_class=HTMLResponse)
+async def read_admin_alias(username: str = Depends(get_current_username)):
     return FileResponse(FRONTEND_DIR / "admin.html")
