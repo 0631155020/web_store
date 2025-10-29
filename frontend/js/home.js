@@ -54,6 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCartView();
     };
 
+    const removeFromCart = (index) => {
+        cart.splice(index, 1);
+        updateCartView();
+    };
+
     const updateCartView = () => {
         // Обновляем счетчик
         cartCount.textContent = cart.length;
@@ -61,12 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Обновляем содержимое модального окна
         cartItems.innerHTML = '';
         let total = 0;
-        cart.forEach(item => {
+        cart.forEach((item, index) => {
             const cartItem = document.createElement('div');
             cartItem.className = 'cart-item';
             cartItem.innerHTML = `
                 <span>${item.description || item.filename}</span>
                 <span>$${item.price.toFixed(2)}</span>
+                <button class="remove-from-cart-btn" data-index="${index}">Удалить</button>
             `;
             cartItems.appendChild(cartItem);
             total += item.price;
@@ -74,6 +80,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Обновляем итоговую сумму
         cartTotal.textContent = total.toFixed(2);
+
+        // Добавляем обработчики для кнопок удаления
+        document.querySelectorAll('.remove-from-cart-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const index = parseInt(button.dataset.index, 10);
+                removeFromCart(index);
+            });
+        });
     };
 
     // --- Управление модальным окном ---
