@@ -14,3 +14,24 @@
         "price": 500.00
     }
 ]
+        "id": "3c0c3c50-1635-4df2-b61e-aec562d9483a",
+        "filename": "20220918_122728.jpg",
+        "description": "",
+        "path": "/uploads/30e44231-acd8-4d99-b511-abade848ee18.jpg",
+        "price": 9.0
+    },
+    {
+        "id": "0ca1cf66-a9e4-40d1-b23a-d82787a4ea95",
+        "filename": "20220918_131233.jpg",
+        "description": "\u043f\u0440\u043e\u0434\u0430\u0442\u044c",
+        "path": "/uploads/7620af4d-22e5-46d0-b286-7a22217df455.jpg",
+        "price": 100.0
+    },
+    {
+        "id": "48a47ddf-cdb2-4b21-8890-721be87993be",
+        "filename": "20220924_180313.jpg",
+        "description": "coffee brake",
+        "path": "/uploads/748507b6-3ff0-4273-a182-496a5152865a.jpg",
+        "price": 1000.0
+    }
+]
