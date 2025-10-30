@@ -7,23 +7,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeButton = document.querySelector('.close-button');
     const cartItems = document.getElementById('cartItems');
     const cartTotal = document.getElementById('cartTotal');
+    const checkoutButton = document.getElementById('checkoutButton');
 
     // --- Состояние ---
-    let cart = []; // Теперь будет массив объектов { photo, quantity }
-    let photos = []; // Хранилище для всех фото
+    let cart = [];
+    let photos = [];
+
+    // --- Функции для работы с localStorage ---
+    const saveCart = () => {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    };
+
+    const loadCart = () => {
+        const cartData = localStorage.getItem('cart');
+        cart = cartData ? JSON.parse(cartData) : [];
+        updateCartView();
+    };
 
     // --- Функция для отображения галереи ---
     const fetchAndDisplayPhotos = async () => {
         try {
             const response = await fetch('/photos');
-            const fetchedPhotos = await response.json();
-            photos = fetchedPhotos; // Сохраняем фото в глобальной области видимости
+            photos = await response.json();
 
             galleryContainer.innerHTML = '';
             photos.forEach(photo => {
                 const galleryItem = document.createElement('div');
                 galleryItem.className = 'gallery-item';
-
                 galleryItem.innerHTML = `
                     <img src="${photo.path}" alt="${photo.description || photo.filename}">
                     <div class="info">
@@ -32,11 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button class="add-to-cart-btn" data-id="${photo.id}">Добавить в корзину</button>
                     </div>
                 `;
-
                 galleryContainer.appendChild(galleryItem);
             });
 
-            // Добавляем обработчики на новые кнопки
             document.querySelectorAll('.add-to-cart-btn').forEach(button => {
                 button.addEventListener('click', () => {
                     const photoId = button.dataset.id;
@@ -58,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             cart.push({ photo: photo, quantity: 1 });
         }
+        saveCart();
         updateCartView();
     };
 
@@ -69,24 +78,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 cart.splice(itemIndex, 1);
             }
         }
+        saveCart();
         updateCartView();
     };
 
     const removeAllFromCart = (photoId) => {
-        const itemIndex = cart.findIndex(item => item.photo.id === photoId);
-        if (itemIndex > -1) {
-            cart.splice(itemIndex, 1);
-        }
+        cart = cart.filter(item => item.photo.id !== photoId);
+        saveCart();
         updateCartView();
     };
 
-
     const updateCartView = () => {
-        // Обновляем счетчик - общее количество товаров
         const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
         cartCount.textContent = totalItems;
 
-        // Обновляем содержимое модального окна
         cartItems.innerHTML = '';
         let total = 0;
         cart.forEach(item => {
@@ -107,10 +112,9 @@ document.addEventListener('DOMContentLoaded', () => {
             total += itemTotal;
         });
 
-        // Обновляем итоговую сумму
         cartTotal.textContent = total.toFixed(2);
 
-        // Добавляем обработчики для кнопок
+        // --- Обработчики событий для кнопок в корзине ---
         document.querySelectorAll('.increase-quantity-btn').forEach(button => {
             button.addEventListener('click', () => {
                 const photoId = button.dataset.id;
@@ -143,6 +147,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- Переход к оформлению заказа ---
+    checkoutButton.addEventListener('click', () => {
+        if (cart.length > 0) {
+            window.location.href = '/checkout';
+        } else {
+            alert('Ваша корзина пуста!');
+        }
+    });
+
     // --- Инициализация ---
     fetchAndDisplayPhotos();
+    loadCart();
 });

@@ -1,0 +1,135 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    max-width: 1000px;
+    width: 100%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.checkout-form {
+    flex: 2;
+    padding-right: 20px;
+}
+
+.order-summary {
+    flex: 1;
+    padding-left: 20px;
+    border-left: 1px solid #ddd;
+}
+
+h2, h3 {
+    margin-top: 0;
+}
+
+.delivery-options, .address-type {
+    margin-bottom: 20px;
+}
+
+.delivery-options button, .address-type button {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+    margin-right: 10px;
+    border-radius: 4px;
+}
+
+.delivery-options button.active, .address-type button.active {
+    border-color: #000;
+    background-color: #f0f0f0;
+}
+
+#delivery-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.name-fields {
+    display: flex;
+    gap: 10px;
+}
+
+.name-fields input {
+    flex: 1;
+}
+
+.manual-address {
+    display: block;
+    margin-bottom: 15px;
+    text-align: right;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.submit-order-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.submit-order-btn:hover {
+    background-color: #0056b3;
+}
+
+.order-summary .edit-bag {
+    float: right;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.summary-details p {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.summary-details .total {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.arrival-date {
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+.cart-items-summary .cart-item {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.cart-items-summary .cart-item img {
+    width: 60px;
+    height: 60px;
+    margin-right: 15px;
+    border-radius: 4px;
+}
+
+.cart-items-summary .cart-item .item-details {
+    flex: 1;
+}
+
+.cart-items-summary .cart-item .item-details p {
+    margin: 0;
+}
