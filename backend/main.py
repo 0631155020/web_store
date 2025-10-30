@@ -1,8 +1,10 @@
-import json
+
 import secrets
 import uuid
 from pathlib import Path
 from typing import List, Optional
+import os
+import time
 
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -10,41 +12,60 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from sqlalchemy import create_engine, Column, String, Float, text
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
+# --- Database Configuration ---
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@db/mydatabase")
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+# --- SQLAlchemy Model ---
+class PhotoDB(Base):
+    __tablename__ = "photos"
+    id = Column(String, primary_key=True, index=True)
+    filename = Column(String)
+    description = Column(String, nullable=True)
+    path = Column(String)
+    price = Column(Float, default=0.0)
+
+# --- Pydantic Model ---
+class Photo(BaseModel):
+    id: str
+    filename: str
+    description: Optional[str] = None
+    path: str
+    price: Optional[float] = 0.0
+
+    class Config:
+        orm_mode = True
+
+# --- FastAPI App Initialization ---
 app = FastAPI()
 
-# --- Настройка CORS ---
+# --- CORS Middleware ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Разрешаем все источники (для простоты)
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- Пути к файлам и директориям ---
-# Определяем пути относительно корня проекта (/app)
+# --- File and Directory Paths ---
 APP_DIR = Path("/app")
-DATA_DIR = APP_DIR / "data"
 UPLOADS_DIR = APP_DIR / "uploads"
 FRONTEND_DIR = APP_DIR / "frontend"
-PHOTOS_JSON_PATH = DATA_DIR / "photos.json"
-
-# --- Создание директорий, если их нет ---
-DATA_DIR.mkdir(exist_ok=True)
 UPLOADS_DIR.mkdir(exist_ok=True)
 
-# --- Инициализация JSON-файла, если он не существует ---
-if not PHOTOS_JSON_PATH.exists():
-    with open(PHOTOS_JSON_PATH, "w") as f:
-        json.dump([], f)
-
-# --- Монтирование статических файлов ---
+# --- Static Files ---
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
+# --- Security ---
 security = HTTPBasic()
-
-# --- Hardcoded credentials ---
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "password"
 
@@ -59,33 +80,49 @@ def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
         )
     return credentials.username
 
+# --- Database Initialization with Retry ---
+def init_db():
+    retries = 5
+    delay = 5  # seconds
+    for i in range(retries):
+        try:
+            # Check connection and create table
+            with engine.connect() as connection:
+                connection.execute(text("SELECT 1"))
+            Base.metadata.create_all(bind=engine)
+            print("Database connection successful and table created.")
+            return
+        except OperationalError as e:
+            print(f"Database connection failed: {e}. Retrying in {delay} seconds...")
+            time.sleep(delay)
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}. Retrying in {delay} seconds...")
+            time.sleep(delay)
+    print("Could not connect to the database after several retries. Exiting.")
+    raise Exception("Could not connect to the database.")
 
-# --- Модели Pydantic ---
-class Photo(BaseModel):
-    id: str
-    filename: str
-    description: Optional[str] = None
-    path: str
-    price: Optional[float] = 0.0
 
-# --- Функции для работы с данными ---
-def read_photos_db() -> List[dict]:
-    with open(PHOTOS_JSON_PATH, "r") as f:
-        return json.load(f)
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
-def write_photos_db(data: List[dict]):
-    with open(PHOTOS_JSON_PATH, "w") as f:
-        json.dump(data, f, indent=4)
+# --- Dependency for DB Session ---
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-# --- Эндпоинты API ---
+# --- API Endpoints ---
 @app.post("/photos", response_model=Photo)
 async def upload_photo(
     description: Optional[str] = None,
     price: float = 0.0,
     file: UploadFile = File(...),
-    username: str = Depends(get_current_username)
+    username: str = Depends(get_current_username),
+    db=Depends(get_db)
 ):
-    photos = read_photos_db()
     file_extension = Path(file.filename).suffix
     unique_filename = f"{uuid.uuid4()}{file_extension}"
     file_path = UPLOADS_DIR / unique_filename
@@ -93,48 +130,41 @@ async def upload_photo(
     with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
 
-    new_photo = Photo(
+    new_photo = PhotoDB(
         id=str(uuid.uuid4()),
         filename=file.filename,
         description=description,
         path=f"/uploads/{unique_filename}",
         price=price
     )
-
-    photos.append(new_photo.dict())
-    write_photos_db(photos)
-
+    db.add(new_photo)
+    db.commit()
+    db.refresh(new_photo)
     return new_photo
 
 @app.get("/photos", response_model=List[Photo])
-def get_all_photos():
-    return read_photos_db()
+def get_all_photos(db=Depends(get_db)):
+    return db.query(PhotoDB).all()
 
 @app.get("/photos/{photo_id}", response_model=Photo)
-def get_photo_by_id(photo_id: str):
-    photos = read_photos_db()
-    photo = next((p for p in photos if p["id"] == photo_id), None)
+def get_photo_by_id(photo_id: str, db=Depends(get_db)):
+    photo = db.query(PhotoDB).filter(PhotoDB.id == photo_id).first()
     if not photo:
         raise HTTPException(status_code=404, detail="Photo not found")
     return photo
 
 @app.delete("/photos/{photo_id}", status_code=200)
-def delete_photo(photo_id: str, username: str = Depends(get_current_username)):
-    photos = read_photos_db()
-    photo_to_delete = next((p for p in photos if p["id"] == photo_id), None)
-
+def delete_photo(photo_id: str, username: str = Depends(get_current_username), db=Depends(get_db)):
+    photo_to_delete = db.query(PhotoDB).filter(PhotoDB.id == photo_id).first()
     if not photo_to_delete:
         raise HTTPException(status_code=404, detail="Photo not found")
 
-    # Удаляем файл изображения
-    file_path = APP_DIR / photo_to_delete['path'].strip("/")
+    file_path = APP_DIR / photo_to_delete.path.strip("/")
     if file_path.exists():
         file_path.unlink()
 
-    # Удаляем запись о фото из базы данных
-    updated_photos = [p for p in photos if p["id"] != photo_id]
-    write_photos_db(updated_photos)
-
+    db.delete(photo_to_delete)
+    db.commit()
     return JSONResponse(content={"message": "Photo deleted successfully"})
 
 @app.get("/uploads/{filename}")
@@ -144,7 +174,7 @@ async def get_uploaded_file(filename: str):
         raise HTTPException(status_code=404, detail="File not found")
     return FileResponse(file_path)
 
-# --- Эндпоинты для отдачи HTML страниц ---
+# --- HTML Endpoints ---
 @app.get("/", response_class=HTMLResponse)
 async def read_home():
     return FileResponse(FRONTEND_DIR / "home.html")

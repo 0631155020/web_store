@@ -12,3 +12,18 @@ services:
       - ${PWD}/data:/app/data
     environment:
       - PYTHONUNBUFFERED=1
+      - DATABASE_URL=postgresql://user:password@db/mydatabase
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+
+volumes:
+  postgres_data:
