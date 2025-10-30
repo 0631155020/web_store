@@ -134,3 +134,25 @@ h2, h3 {
 .cart-items-summary .cart-item .item-details p {
     margin: 0;
 }
+
+.delivery-section, .payment-section {
+    margin-bottom: 20px;
+}
+
+.delivery-option, .payment-option {
+    margin-bottom: 10px;
+}
+
+.delivery-details {
+    display: none;
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+#nova-poshta-details select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
