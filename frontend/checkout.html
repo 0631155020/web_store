@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление заказа</title>
+    <link rel="stylesheet" href="/static/css/checkout.css">
+</head>
+<body>
+    <div class="container">
+        <div class="checkout-form">
+            <h2>Checkout</h2>
+            <div class="delivery-options">
+                <button class="active">Ship</button>
+                <button>Pick Up</button>
+            </div>
+            <div class="address-type">
+                <button class="active">Home/Office</button>
+                <button>APO/FPO</button>
+            </div>
+            <form id="delivery-form">
+                <input type="email" name="email" placeholder="Email*" required>
+                <div class="name-fields">
+                    <input type="text" name="firstName" placeholder="First Name*" required>
+                    <input type="text" name="lastName" placeholder="Last Name*" required>
+                </div>
+                <input type="text" name="address" placeholder="Start typing address" required>
+                <a href="#" class="manual-address">Enter address manually</a>
+                <input type="tel" name="phone" placeholder="Phone Number*" required>
+                <button type="submit" class="submit-order-btn">Place Order</button>
+            </form>
+        </div>
+        <div class="order-summary">
+            <h3>In Your Bag</h3>
+            <a href="#" class="edit-bag">Edit</a>
+            <div class="summary-details">
+                <p>Subtotal <span id="subtotal-price">$0.00</span></p>
+                <p>Shipping <span id="shipping-price">$0.00</span></p>
+                <p>Estimated Tax <span id="tax-price">$0.00</span></p>
+                <p class="total">Total <span id="total-price">$0.00</span></p>
+            </div>
+            <div class="arrival-date">
+                <p>Arrives by Thu, Nov 6</p>
+            </div>
+            <div id="cart-items-summary" class="cart-items-summary">
+                <!-- Cart items will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/checkout.js"></script>
+</body>
+</html>

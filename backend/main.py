@@ -12,7 +12,7 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from sqlalchemy import create_engine, Column, String, Float, text
+from sqlalchemy import create_engine, Column, String, Float, text, Integer
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -23,7 +23,7 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# --- SQLAlchemy Model ---
+# --- SQLAlchemy Models ---
 class PhotoDB(Base):
     __tablename__ = "photos"
     id = Column(String, primary_key=True, index=True)
@@ -32,7 +32,23 @@ class PhotoDB(Base):
     path = Column(String)
     price = Column(Float, default=0.0)
 
-# --- Pydantic Model ---
+class Order(Base):
+    __tablename__ = "orders"
+    id = Column(String, primary_key=True, index=True)
+    email = Column(String)
+    firstName = Column(String)
+    lastName = Column(String)
+    address = Column(String)
+    phone = Column(String)
+
+class OrderItem(Base):
+    __tablename__ = "order_items"
+    id = Column(String, primary_key=True, index=True)
+    order_id = Column(String)
+    photo_id = Column(String)
+    quantity = Column(Integer)
+
+# --- Pydantic Models ---
 class Photo(BaseModel):
     id: str
     filename: str
@@ -42,6 +58,18 @@ class Photo(BaseModel):
 
     class Config:
         orm_mode = True
+
+class OrderItemSchema(BaseModel):
+    photo_id: str
+    quantity: int
+
+class OrderSchema(BaseModel):
+    email: str
+    firstName: str
+    lastName: str
+    address: str
+    phone: str
+    items: List[OrderItemSchema]
 
 # --- FastAPI App Initialization ---
 app = FastAPI()
@@ -167,6 +195,31 @@ def delete_photo(photo_id: str, username: str = Depends(get_current_username), d
     db.commit()
     return JSONResponse(content={"message": "Photo deleted successfully"})
 
+@app.post("/orders", status_code=201)
+async def create_order(order: OrderSchema, db=Depends(get_db)):
+    order_id = str(uuid.uuid4())
+    new_order = Order(
+        id=order_id,
+        email=order.email,
+        firstName=order.firstName,
+        lastName=order.lastName,
+        address=order.address,
+        phone=order.phone
+    )
+    db.add(new_order)
+
+    for item in order.items:
+        new_item = OrderItem(
+            id=str(uuid.uuid4()),
+            order_id=order_id,
+            photo_id=item.photo_id,
+            quantity=item.quantity
+        )
+        db.add(new_item)
+
+    db.commit()
+    return {"message": "Order created successfully", "order_id": order_id}
+
 @app.get("/uploads/{filename}")
 async def get_uploaded_file(filename: str):
     file_path = UPLOADS_DIR / filename
@@ -190,3 +243,7 @@ async def read_admin(username: str = Depends(get_current_username)):
 @app.get("/admin.html", response_class=HTMLResponse)
 async def read_admin_alias(username: str = Depends(get_current_username)):
     return FileResponse(FRONTEND_DIR / "admin.html")
+
+@app.get("/checkout", response_class=HTMLResponse)
+async def read_checkout():
+    return FileResponse(FRONTEND_DIR / "checkout.html")
