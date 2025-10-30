@@ -18,6 +18,50 @@
                 </div>
                 <input type="text" name="address" placeholder="Start typing address" required>
                 <input type="tel" name="phone" placeholder="Phone Number*" required>
+
+                <div class="delivery-section">
+                    <h4>Способ доставки</h4>
+                    <div class="delivery-option">
+                        <input type="radio" id="rozetka" name="deliveryMethod" value="rozetka" checked>
+                        <label for="rozetka">Магазини Rozetka</label>
+                    </div>
+                    <div class="delivery-option">
+                        <input type="radio" id="nova-poshta" name="deliveryMethod" value="nova-poshta">
+                        <label for="nova-poshta">Нова Пошта</label>
+                    </div>
+                    <div id="nova-poshta-details" class="delivery-details">
+                        <div class="name-fields">
+                            <select id="nova-poshta-city" name="novaPoshtaCity">
+                                <option value="kyiv">Київ</option>
+                                <option value="odesa">Одеса</option>
+                                <option value="dnipro">Дніпро</option>
+                                <option value="kharkiv">Харків</option>
+                                <option value="lviv">Львів</option>
+                            </select>
+                            <select id="nova-poshta-warehouse" name="novaPoshtaWarehouse">
+                                <option value="1">Відділення №1</option>
+                                <option value="2">Відділення №2</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="delivery-option">
+                        <input type="radio" id="ukrposhta" name="deliveryMethod" value="ukrposhta">
+                        <label for="ukrposhta">Укрпошта</label>
+                    </div>
+                </div>
+
+                <div class="payment-section">
+                    <h4>Способ оплаты</h4>
+                    <div class="payment-option">
+                        <input type="radio" id="card" name="paymentMethod" value="card" checked>
+                        <label for="card">Оплата картой</label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" id="cash" name="paymentMethod" value="cash">
+                        <label for="cash">Оплата при получении</label>
+                    </div>
+                </div>
+
                 <button type="submit" class="submit-order-btn">Place Order</button>
             </form>
         </div>

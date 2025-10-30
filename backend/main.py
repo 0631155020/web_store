@@ -12,7 +12,7 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from sqlalchemy import create_engine, Column, String, Float, text, Integer
+from sqlalchemy import create_engine, Column, String, Float, text, Integer, JSON
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -40,6 +40,9 @@ class Order(Base):
     lastName = Column(String)
     address = Column(String)
     phone = Column(String)
+    deliveryMethod = Column(String)
+    paymentMethod = Column(String)
+    novaPoshta = Column(JSON, nullable=True)
 
 class OrderItem(Base):
     __tablename__ = "order_items"
@@ -63,12 +66,19 @@ class OrderItemSchema(BaseModel):
     photo_id: str
     quantity: int
 
+class NovaPoshtaSchema(BaseModel):
+    city: str
+    warehouse: str
+
 class OrderSchema(BaseModel):
     email: str
     firstName: str
     lastName: str
     address: str
     phone: str
+    deliveryMethod: str
+    paymentMethod: str
+    novaPoshta: Optional[NovaPoshtaSchema] = None
     items: List[OrderItemSchema]
 
 # --- FastAPI App Initialization ---
@@ -198,13 +208,19 @@ def delete_photo(photo_id: str, username: str = Depends(get_current_username), d
 @app.post("/orders", status_code=201)
 async def create_order(order: OrderSchema, db=Depends(get_db)):
     order_id = str(uuid.uuid4())
+
+    nova_poshta_data = order.novaPoshta.dict() if order.novaPoshta else None
+
     new_order = Order(
         id=order_id,
         email=order.email,
         firstName=order.firstName,
         lastName=order.lastName,
         address=order.address,
-        phone=order.phone
+        phone=order.phone,
+        deliveryMethod=order.deliveryMethod,
+        paymentMethod=order.paymentMethod,
+        novaPoshta=nova_poshta_data
     )
     db.add(new_order)
 
