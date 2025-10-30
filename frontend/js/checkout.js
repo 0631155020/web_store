@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalPriceEl = document.getElementById('total-price');
     const cartItemsSummaryEl = document.getElementById('cart-items-summary');
     const deliveryForm = document.getElementById('delivery-form');
+    const novaPoshtaDetails = document.getElementById('nova-poshta-details');
+    const deliveryMethodRadios = document.querySelectorAll('input[name="deliveryMethod"]');
 
     // --- Состояние ---
     let cart = [];
@@ -62,17 +64,30 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
 
         const formData = new FormData(deliveryForm);
+        const deliveryMethod = formData.get('deliveryMethod');
+        const paymentMethod = formData.get('paymentMethod');
+
         const orderData = {
             email: formData.get('email'),
             firstName: formData.get('firstName'),
             lastName: formData.get('lastName'),
             address: formData.get('address'),
             phone: formData.get('phone'),
+            deliveryMethod: deliveryMethod,
+            paymentMethod: paymentMethod,
+            novaPoshta: null,
             items: cart.map(item => ({
                 photo_id: item.photo.id,
                 quantity: item.quantity
             }))
         };
+
+        if (deliveryMethod === 'nova-poshta') {
+            orderData.novaPoshta = {
+                city: formData.get('novaPoshtaCity'),
+                warehouse: formData.get('novaPoshtaWarehouse')
+            };
+        }
 
         try {
             const response = await fetch('/orders', {
@@ -101,4 +116,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Инициализация ---
     loadCart();
     deliveryForm.addEventListener('submit', handleOrderSubmit);
+
+    deliveryMethodRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.value === 'nova-poshta') {
+                novaPoshtaDetails.style.display = 'block';
+            } else {
+                novaPoshtaDetails.style.display = 'none';
+            }
+        });
+    });
 });
