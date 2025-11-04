@@ -59,6 +59,41 @@ h2, h3 {
     border-radius: 4px;
 }
 
+.delivery-sub-option {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.np-fields-container {
+    margin-top: 15px;
+}
+
+.city-search-container {
+    position: relative;
+}
+
+#city-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+#city-suggestions div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+#city-suggestions div:hover {
+    background-color: #f0f0f0;
+}
+
 .name-fields {
     display: flex;
     gap: 10px;
