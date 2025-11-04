@@ -29,19 +29,34 @@
                         <input type="radio" id="nova-poshta" name="deliveryMethod" value="nova-poshta">
                         <label for="nova-poshta">Нова Пошта</label>
                     </div>
-                    <div id="nova-poshta-details" class="delivery-details">
-                        <div class="name-fields">
-                            <select id="nova-poshta-city" name="novaPoshtaCity">
-                                <option value="kyiv">Київ</option>
-                                <option value="odesa">Одеса</option>
-                                <option value="dnipro">Дніпро</option>
-                                <option value="kharkiv">Харків</option>
-                                <option value="lviv">Львів</option>
-                            </select>
-                            <select id="nova-poshta-warehouse" name="novaPoshtaWarehouse">
-                                <option value="1">Відділення №1</option>
-                                <option value="2">Відділення №2</option>
-                            </select>
+                    <div id="nova-poshta-details" class="delivery-details" style="display: none;">
+                        <div class="delivery-sub-option">
+                            <input type="radio" id="np-warehouse" name="novaPoshtaDeliveryType" value="warehouse" checked>
+                            <label for="np-warehouse">У відділення</label>
+                        </div>
+                        <div class="delivery-sub-option">
+                            <input type="radio" id="np-postomat" name="novaPoshtaDeliveryType" value="postomat">
+                            <label for="np-postomat">У поштомат</label>
+                        </div>
+                        <div class="delivery-sub-option">
+                            <input type="radio" id="np-courier" name="novaPoshtaDeliveryType" value="courier">
+                            <label for="np-courier">Кур'єром</label>
+                        </div>
+
+                        <div class="np-fields-container">
+                            <div class="city-search-container">
+                                <input type="text" id="nova-poshta-city-input" name="novaPoshtaCity" placeholder="Введіть населений пункт" autocomplete="off">
+                                <div id="city-suggestions" class="suggestions-dropdown"></div>
+                            </div>
+                            <select id="nova-poshta-warehouse" name="novaPoshtaWarehouse" style="display: none;"></select>
+                        </div>
+
+                        <div id="np-courier-address" style="display: none;">
+                            <input type="text" name="novaPoshtaStreet" placeholder="Вулиця">
+                            <div class="name-fields">
+                                <input type="text" name="novaPoshtaBuilding" placeholder="Будинок">
+                                <input type="text" name="novaPoshtaApartment" placeholder="Квартира">
+                            </div>
                         </div>
                     </div>
                     <div class="delivery-option">
