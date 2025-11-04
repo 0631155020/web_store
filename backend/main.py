@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import List, Optional
 import os
 import time
+import httpx
 
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -83,6 +84,38 @@ class OrderSchema(BaseModel):
 
 # --- FastAPI App Initialization ---
 app = FastAPI()
+
+# --- Nova Poshta API ---
+NOVA_POSHTA_API_KEY = os.getenv("NOVA_POSHTA_API_KEY")
+NOVA_POSHTA_API_URL = "https://api.novaposhta.ua/v2.0/json/"
+
+@app.get("/api/novaposhta/all-cities")
+async def get_all_cities():
+    async with httpx.AsyncClient() as client:
+        response = await client.post(NOVA_POSHTA_API_URL, json={
+            "apiKey": NOVA_POSHTA_API_KEY,
+            "modelName": "Address",
+            "calledMethod": "getCities",
+            "methodProperties": {}
+        })
+        return response.json()
+
+@app.post("/api/novaposhta/warehouses")
+async def find_warehouses(request: dict):
+    city_ref = request.get("cityRef")
+    if not city_ref:
+        raise HTTPException(status_code=400, detail="City ref is required")
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(NOVA_POSHTA_API_URL, json={
+            "apiKey": NOVA_POSHTA_API_KEY,
+            "modelName": "AddressGeneral",
+            "calledMethod": "getWarehouses",
+            "methodProperties": {
+                "CityRef": city_ref
+            }
+        })
+        return response.json()
 
 # --- CORS Middleware ---
 app.add_middleware(
