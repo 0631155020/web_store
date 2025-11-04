@@ -10,8 +10,7 @@ services:
       - ${PWD}/frontend:/app/frontend
       - ${PWD}/uploads:/app/uploads
       - ${PWD}/data:/app/data
-    env_file:
-      - backend/.env
+    
     environment:
       - PYTHONUNBUFFERED=1
       - DATABASE_URL=postgresql://user:password@db/mydatabase
