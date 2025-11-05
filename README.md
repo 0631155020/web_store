@@ -94,3 +94,6 @@ to delete container
 ```bush
 docker-compose down
 ```
+explenation how to make connection to database
+
+https://youtu.be/bu6IURMFZwQ?si=0COeKx1xtlcadVgE
