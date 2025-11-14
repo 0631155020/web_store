@@ -105,6 +105,16 @@ def send_order_email(order_details: dict):
     msg["To"] = RECIPIENT_EMAIL
 
     # --- HTML Body ---
+    nova_poshta_details_html = ""
+    if order_details.get("novaPoshta"):
+        nova_poshta_info = order_details["novaPoshta"]
+        if nova_poshta_info:
+            nova_poshta_details_html = f"""
+            <h4>Nova Poshta Details:</h4>
+            <p><strong>City:</strong> {nova_poshta_info.get('city', 'N/A')}</p>
+            <p><strong>Warehouse:</strong> {nova_poshta_info.get('warehouse', 'N/A')}</p>
+            """
+
     html = f"""
     <html>
     <body>
@@ -116,6 +126,7 @@ def send_order_email(order_details: dict):
         <p><strong>Phone:</strong> {order_details['phone']}</p>
         <p><strong>Delivery Method:</strong> {order_details['deliveryMethod']}</p>
         <p><strong>Payment Method:</strong> {order_details['paymentMethod']}</p>
+        {nova_poshta_details_html}
     </body>
     </html>
     """
@@ -313,7 +324,20 @@ async def create_order(order: OrderSchema, db=Depends(get_db)):
         db.add(new_item)
 
     db.commit()
-    send_order_email(new_order.__dict__)
+
+    order_details = {
+        "id": new_order.id,
+        "email": new_order.email,
+        "firstName": new_order.firstName,
+        "lastName": new_order.lastName,
+        "address": new_order.address,
+        "phone": new_order.phone,
+        "deliveryMethod": new_order.deliveryMethod,
+        "paymentMethod": new_order.paymentMethod,
+        "novaPoshta": new_order.novaPoshta
+    }
+    send_order_email(order_details)
+
     return {"message": "Order created successfully", "order_id": order_id}
 
 @app.get("/uploads/{filename}")
