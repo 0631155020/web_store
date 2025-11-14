@@ -4,9 +4,12 @@ import uuid
 from pathlib import Path
 from typing import List, Optional
 import os
+import smtplib
 import time
-import httpx
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
+import httpx
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
@@ -84,6 +87,49 @@ class OrderSchema(BaseModel):
 
 # --- FastAPI App Initialization ---
 app = FastAPI()
+
+# --- Email Sending ---
+def send_order_email(order_details: dict):
+    # --- Email Configuration ---
+    SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.example.com")
+    SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
+    SMTP_USERNAME = os.getenv("SMTP_USERNAME", "user@example.com")
+    SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "password")
+    RECIPIENT_EMAIL = "udodiliaton@gmail.com"
+
+    # --- Email Content ---
+    sender_email = SMTP_USERNAME
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = f"New Order Received: {order_details['id']}"
+    msg["From"] = sender_email
+    msg["To"] = RECIPIENT_EMAIL
+
+    # --- HTML Body ---
+    html = f"""
+    <html>
+    <body>
+        <h2>New Order Details</h2>
+        <p><strong>Order ID:</strong> {order_details['id']}</p>
+        <p><strong>Email:</strong> {order_details['email']}</p>
+        <p><strong>Name:</strong> {order_details['firstName']} {order_details['lastName']}</p>
+        <p><strong>Address:</strong> {order_details['address']}</p>
+        <p><strong>Phone:</strong> {order_details['phone']}</p>
+        <p><strong>Delivery Method:</strong> {order_details['deliveryMethod']}</p>
+        <p><strong>Payment Method:</strong> {order_details['paymentMethod']}</p>
+    </body>
+    </html>
+    """
+    msg.attach(MIMEText(html, "html"))
+
+    # --- Send Email ---
+    try:
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
+            server.sendmail(sender_email, RECIPIENT_EMAIL, msg.as_string())
+        print("Order email sent successfully.")
+    except Exception as e:
+        print(f"Failed to send order email: {e}")
 
 # --- Nova Poshta API ---
 NOVA_POSHTA_API_KEY = os.getenv("NOVA_POSHTA_API_KEY")
@@ -267,6 +313,7 @@ async def create_order(order: OrderSchema, db=Depends(get_db)):
         db.add(new_item)
 
     db.commit()
+    send_order_email(new_order.__dict__)
     return {"message": "Order created successfully", "order_id": order_id}
 
 @app.get("/uploads/{filename}")

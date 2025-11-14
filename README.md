@@ -94,3 +94,21 @@ to delete container
 ```bush
 docker-compose down
 ```
+
+## Email Configuration
+
+To enable email notifications for new orders, you need to configure the SMTP server settings. Create a `.env` file in the `backend` directory by copying the `backend/.env.example` file and filling in your credentials.
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+Then, edit `backend/.env` with your SMTP server details:
+
+```
+SMTP_SERVER=your_smtp_server
+SMTP_PORT=your_smtp_port
+SMTP_USERNAME=your_email
+SMTP_PASSWORD=your_password
+NOVA_POSHTA_API_KEY=your_api_key
+```
