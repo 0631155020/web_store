@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             deliveryMethod: 'nova-poshta',
             paymentMethod: formData.get('paymentMethod'),
             novaPoshta: {
-                city: citySelect.options[citySelect.selectedIndex].text,
+                city: $(citySelect).select2('data')[0].text,
                 cityRef: formData.get('novaPoshtaCity'),
                 warehouse: warehouseSelect.options[warehouseSelect.selectedIndex].text,
                 warehouseRef: formData.get('novaPoshtaWarehouse'),
@@ -114,11 +114,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/novaposhta/all-cities');
             const data = await response.json();
             if (data.success && data.data.length > 0) {
-                data.data.forEach(city => {
-                    const option = document.createElement('option');
-                    option.value = city.Ref;
-                    option.textContent = city.Description;
-                    citySelect.appendChild(option);
+                const cities = data.data.map(city => ({
+                    id: city.Ref,
+                    text: city.Description
+                }));
+
+                $(citySelect).select2({
+                    data: cities,
+                    placeholder: 'Оберіть місто',
+                    allowClear: true
+                }).on('select2:select', function (e) {
+                    // Cброс и загрузка отделений при выборе города
+                    warehouseSelect.innerHTML = '<option value="" disabled selected>Спочатку оберіть місто</option>';
+                    loadWarehouses();
                 });
             }
         } catch (error) {
@@ -136,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/novaposhta/warehouses', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ cityRef })
+                body: JSON.stringify({ cityRef: citySelect.value })
             });
             const data = await response.json();
 
