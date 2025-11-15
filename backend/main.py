@@ -95,7 +95,7 @@ def send_order_email(order_details: dict):
     SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
     SMTP_USERNAME = os.getenv("SMTP_USERNAME", "user@example.com")
     SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "password")
-    RECIPIENT_EMAIL = "udodiliaton@gmail.com"
+    RECIPIENT_EMAIL = "udodpilot@gmail.com"
 
     # --- Email Content ---
     sender_email = SMTP_USERNAME
