@@ -192,3 +192,16 @@ main {
 .lang-option:not(.active):hover {
     background-color: #666;
 }
+
+.search-section {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+#searchInput {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 50%;
+    max-width: 400px;
+}
