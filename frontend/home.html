@@ -9,15 +9,22 @@
 <body>
 
     <header>
-        <h1>Пижамы</h1>
-        <div class="cart-icon" id="cartIcon">
-            🛒 <span id="cartCount">0</span>
+        <h1 data-i18n-key="pyjamas">Пижамы</h1>
+        <div class="controls-container">
+            <div class="language-switcher">
+                <span class="lang-option active" data-lang="ua">UA</span>
+                <span class="lang-option" data-lang="ru">RU</span>
+                <span class="lang-option" data-lang="en">EN</span>
+            </div>
+            <div class="cart-icon" id="cartIcon">
+                🛒 <span id="cartCount">0</span>
+            </div>
         </div>
     </header>
 
     <main>
         <section class="gallery">
-            <h2>Колекция</h2>
+            <h2 data-i18n-key="collection">Колекция</h2>
             <div id="galleryContainer" class="gallery-container">
                 <!-- Фотографии будут загружены сюда с помощью JavaScript -->
             </div>
@@ -28,13 +35,14 @@
     <div id="cartModal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
-            <h2>Корзина</h2>
+            <h2 data-i18n-key="cart">Корзина</h2>
             <div id="cartItems"></div>
-            <p><strong>Итого:</strong> $<span id="cartTotal">0.00</span></p>
-            <button id="checkoutButton">Оформить заказ</button>
+            <p><strong data-i18n-key="total">Итого:</strong> $<span id="cartTotal">0.00</span></p>
+            <button id="checkoutButton" data-i18n-key="checkout">Оформить заказ</button>
         </div>
     </div>
 
     <script src="/static/js/home.js?v=1.1"></script>
+    <script src="/static/js/i18n.js"></script>
 </body>
 </html>
