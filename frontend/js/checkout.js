@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
             email: formData.get('email'),
             firstName: formData.get('firstName'),
             lastName: formData.get('lastName'),
-            address: formData.get('address'),
             phone: formData.get('phone'),
             deliveryMethod: 'nova-poshta',
             paymentMethod: formData.get('paymentMethod'),
