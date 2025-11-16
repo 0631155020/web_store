@@ -162,3 +162,33 @@ main {
     border-bottom: 1px solid #ddd;
     padding: 0.5rem 0;
 }
+
+.controls-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.language-switcher {
+    display: flex;
+    gap: 5px;
+    background-color: #444;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.lang-option {
+    padding: 5px 10px;
+    color: white;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.lang-option.active {
+    background-color: #555;
+    font-weight: bold;
+}
+
+.lang-option:not(.active):hover {
+    background-color: #666;
+}
