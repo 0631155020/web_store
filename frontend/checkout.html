@@ -5,61 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оформление заказа</title>
     <link rel="stylesheet" href="/static/css/checkout.css">
+    <link rel="stylesheet" href="/static/css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
+    <div class="language-switcher-container" style="padding: 1rem; background-color: #333; text-align: right;">
+        <div class="language-switcher" style="display: inline-flex;">
+            <span class="lang-option active" data-lang="ua">UA</span>
+            <span class="lang-option" data-lang="ru">RU</span>
+            <span class="lang-option" data-lang="en">EN</span>
+        </div>
+    </div>
     <div class="container">
         <div class="checkout-form">
-            <h2>Checkout</h2>
+            <h2 data-i18n-key="checkout">Checkout</h2>
             <form id="delivery-form">
-                <input type="email" name="email" placeholder="Email*" required>
+                <input type="email" name="email" placeholder="Email*" required data-i18n-key="email">
                 <div class="name-fields">
-                    <input type="text" name="firstName" placeholder="First Name*" required>
-                    <input type="text" name="lastName" placeholder="Last Name*" required>
+                    <input type="text" name="firstName" placeholder="First Name*" required data-i18n-key="firstName">
+                    <input type="text" name="lastName" placeholder="Last Name*" required data-i18n-key="lastName">
                 </div>
-                <input type="tel" name="phone" placeholder="Phone Number*" required>
+                <input type="tel" name="phone" placeholder="Phone Number*" required data-i18n-key="phoneNumber">
 
                 <div class="delivery-section">
-                    <h4>Способ доставки</h4>
+                    <h4 data-i18n-key="deliveryMethod">Способ доставки</h4>
                     <div class="delivery-option">
                         <input type="radio" id="nova-poshta" name="deliveryMethod" value="nova-poshta" checked style="display: none;">
-                        <label for="nova-poshta" style="font-weight: bold;">Нова Пошта (у відділення)</label>
+                        <label for="nova-poshta" style="font-weight: bold;" data-i18n-key="novaPoshtaDelivery">Нова Пошта (у відділення)</label>
                     </div>
                     <div id="nova-poshta-details" class="delivery-details" style="display: block;">
                         <div class="name-fields">
                             <select id="nova-poshta-city" name="novaPoshtaCity" style="width: 100%;" required>
-                                <option value="" disabled selected>Оберіть місто</option>
+                                <option value="" disabled selected data-i18n-key="selectCity">Оберіть місто</option>
                             </select>
                             <select id="nova-poshta-warehouse" name="novaPoshtaWarehouse" required>
-                                <option value="" disabled selected>Спочатку оберіть місто</option>
+                                <option value="" disabled selected data-i18n-key="selectWarehouse">Спочатку оберіть місто</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
                 <div class="payment-section">
-                    <h4>Способ оплаты</h4>
+                    <h4 data-i18n-key="paymentMethod">Способ оплаты</h4>
                     <div class="payment-option">
                         <input type="radio" id="card" name="paymentMethod" value="card" checked>
-                        <label for="card">Оплата картой</label>
+                        <label for="card" data-i18n-key="cardPayment">Оплата картой</label>
                     </div>
                     <div class="payment-option">
                         <input type="radio" id="cash" name="paymentMethod" value="cash">
-                        <label for="cash">Оплата при получении</label>
+                        <label for="cash" data-i18n-key="cashPayment">Оплата при получении</label>
                     </div>
                 </div>
 
-                <button type="submit" class="submit-order-btn">Place Order</button>
+                <button type="submit" class="submit-order-btn" data-i18n-key="placeOrder">Place Order</button>
             </form>
         </div>
         <div class="order-summary">
-            <h3>In Your Bag</h3>
+            <h3 data-i18n-key="inYourBag">In Your Bag</h3>
             
             <div class="summary-details">
-                <p>Цена <span id="subtotal-price">$0.00</span></p>
-                <p>Доставка <span id="shipping-price">$0.00</span></p>
-                <p>Оценочный налог <span id="tax-price">$0.00</span></p>
-                <p class="total">Итого <span id="total-price">$0.00</span></p>
+                <p><span data-i18n-key="subtotal">Subtotal</span> <span id="subtotal-price">$0.00</span></p>
+                <p><span data-i18n-key="shipping">Shipping</span> <span id="shipping-price">$0.00</span></p>
+                <p><span data-i18n-key="estimatedTax">Estimated Tax</span> <span id="tax-price">$0.00</span></p>
+                <p class="total"><span data-i18n-key="total">Total</span> <span id="total-price">$0.00</span></p>
             
             <div id="cart-items-summary" class="cart-items-summary">
                 <!-- Cart items will be dynamically inserted here -->
@@ -69,5 +77,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="/static/js/checkout.js"></script>
+    <script src="/static/js/i18n.js"></script>
 </body>
 </html>

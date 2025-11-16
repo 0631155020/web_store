@@ -9,22 +9,29 @@
 <body>
 
     <header>
-        <h1>Панель администратора</h1>
+        <h1 data-i18n-key="adminPanel">Панель администратора</h1>
+        <div class="controls-container">
+            <div class="language-switcher">
+                <span class="lang-option active" data-lang="ua">UA</span>
+                <span class="lang-option" data-lang="ru">RU</span>
+                <span class="lang-option" data-lang="en">EN</span>
+            </div>
+        </div>
     </header>
 
     <main>
         <section class="upload-form">
-            <h2>Загрузить новое фото</h2>
+            <h2 data-i18n-key="uploadNewPhoto">Загрузить новое фото</h2>
             <form id="uploadForm">
                 <input type="file" id="fileInput" name="file" accept="image/*" required>
-                <input type="text" id="descriptionInput" name="description" placeholder="Описание (необязательно)">
-                <input type="number" id="priceInput" name="price" placeholder="Цена" required min="0" step="0.01">
-                <button type="submit">Загрузить</button>
+                <input type="text" id="descriptionInput" name="description" placeholder="Описание (необязательно)" data-i18n-key="descriptionOptional">
+                <input type="number" id="priceInput" name="price" placeholder="Цена" required min="0" step="0.01" data-i18n-key="price">
+                <button type="submit" data-i18n-key="upload">Загрузить</button>
             </form>
         </section>
 
         <section class="gallery">
-            <h2>Галерея</h2>
+            <h2 data-i18n-key="gallery">Галерея</h2>
             <div id="galleryContainer" class="gallery-container">
                 <!-- Фотографии будут загружены сюда с помощью JavaScript -->
             </div>
@@ -32,5 +39,6 @@
     </main>
 
     <script src="/static/js/admin.js"></script>
+    <script src="/static/js/i18n.js"></script>
 </body>
 </html>
