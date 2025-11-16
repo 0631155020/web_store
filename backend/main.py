@@ -42,7 +42,7 @@ class Order(Base):
     email = Column(String)
     firstName = Column(String)
     lastName = Column(String)
-    address = Column(String)
+    address = Column(String, nullable=True)
     phone = Column(String)
     deliveryMethod = Column(String)
     paymentMethod = Column(String)
@@ -78,7 +78,6 @@ class OrderSchema(BaseModel):
     email: str
     firstName: str
     lastName: str
-    address: str
     phone: str
     deliveryMethod: str
     paymentMethod: str
@@ -115,6 +114,10 @@ def send_order_email(order_details: dict):
             <p><strong>Warehouse:</strong> {nova_poshta_info.get('warehouse', 'N/A')}</p>
             """
 
+    address_html = ""
+    if order_details.get("address"):
+        address_html = f"<p><strong>Address:</strong> {order_details['address']}</p>"
+
     html = f"""
     <html>
     <body>
@@ -122,7 +125,7 @@ def send_order_email(order_details: dict):
         <p><strong>Order ID:</strong> {order_details['id']}</p>
         <p><strong>Email:</strong> {order_details['email']}</p>
         <p><strong>Name:</strong> {order_details['firstName']} {order_details['lastName']}</p>
-        <p><strong>Address:</strong> {order_details['address']}</p>
+        {address_html}
         <p><strong>Phone:</strong> {order_details['phone']}</p>
         <p><strong>Delivery Method:</strong> {order_details['deliveryMethod']}</p>
         <p><strong>Payment Method:</strong> {order_details['paymentMethod']}</p>
@@ -306,7 +309,6 @@ async def create_order(order: OrderSchema, db=Depends(get_db)):
         email=order.email,
         firstName=order.firstName,
         lastName=order.lastName,
-        address=order.address,
         phone=order.phone,
         deliveryMethod=order.deliveryMethod,
         paymentMethod=order.paymentMethod,
