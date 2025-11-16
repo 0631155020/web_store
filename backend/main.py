@@ -118,6 +118,15 @@ def send_order_email(order_details: dict):
     if order_details.get("address"):
         address_html = f"<p><strong>Address:</strong> {order_details['address']}</p>"
 
+    items_html = ""
+    if order_details.get("items"):
+        items_html += "<h4>Ordered Items:</h4><ul>"
+        for item in order_details["items"]:
+            description = item.get('description', 'N/A')
+            quantity = item.get('quantity', 'N/A')
+            items_html += f"<li>{description} (Quantity: {quantity})</li>"
+        items_html += "</ul>"
+
     html = f"""
     <html>
     <body>
@@ -130,6 +139,7 @@ def send_order_email(order_details: dict):
         <p><strong>Delivery Method:</strong> {order_details['deliveryMethod']}</p>
         <p><strong>Payment Method:</strong> {order_details['paymentMethod']}</p>
         {nova_poshta_details_html}
+        {items_html}
     </body>
     </html>
     """
@@ -327,6 +337,15 @@ async def create_order(order: OrderSchema, db=Depends(get_db)):
 
     db.commit()
 
+    detailed_items = []
+    for item in order.items:
+        photo = db.query(PhotoDB).filter(PhotoDB.id == item.photo_id).first()
+        if photo:
+            detailed_items.append({
+                "description": photo.description,
+                "quantity": item.quantity
+            })
+
     order_details = {
         "id": new_order.id,
         "email": new_order.email,
@@ -336,7 +355,8 @@ async def create_order(order: OrderSchema, db=Depends(get_db)):
         "phone": new_order.phone,
         "deliveryMethod": new_order.deliveryMethod,
         "paymentMethod": new_order.paymentMethod,
-        "novaPoshta": new_order.novaPoshta
+        "novaPoshta": new_order.novaPoshta,
+        "items": detailed_items
     }
     send_order_email(order_details)
 
