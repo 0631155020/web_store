@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartItems = document.getElementById('cartItems');
     const cartTotal = document.getElementById('cartTotal');
     const checkoutButton = document.getElementById('checkoutButton');
+    const searchInput = document.getElementById('searchInput');
 
     // --- Состояние ---
     let cart = [];
@@ -154,6 +155,46 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             alert('Ваша корзина пуста!');
         }
+    });
+
+    // --- Функция для фильтрации фотографий ---
+    const filterPhotos = (query) => {
+        const lowerCaseQuery = query.toLowerCase();
+        const filteredPhotos = photos.filter(photo => {
+            const description = photo.description || '';
+            return description.toLowerCase().includes(lowerCaseQuery);
+        });
+        displayFilteredPhotos(filteredPhotos);
+    };
+
+    const displayFilteredPhotos = (filteredPhotos) => {
+        galleryContainer.innerHTML = '';
+        filteredPhotos.forEach(photo => {
+            const galleryItem = document.createElement('div');
+            galleryItem.className = 'gallery-item';
+            galleryItem.innerHTML = `
+                <img src="${photo.path}" alt="${photo.description || photo.filename}">
+                <div class="info">
+                    <p>${photo.description || 'Без описания'}</p>
+                    <p class="price">$${photo.price.toFixed(2)}</p>
+                    <button class="add-to-cart-btn" data-id="${photo.id}">Добавить в корзину</button>
+                </div>
+            `;
+            galleryContainer.appendChild(galleryItem);
+        });
+
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const photoId = button.dataset.id;
+                const photoToAdd = photos.find(p => p.id === photoId);
+                addToCart(photoToAdd);
+            });
+        });
+    };
+
+    // --- Обработчик событий для строки поиска ---
+    searchInput.addEventListener('input', (event) => {
+        filterPhotos(event.target.value);
     });
 
     // --- Инициализация ---

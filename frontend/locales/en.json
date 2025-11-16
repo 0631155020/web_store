@@ -25,5 +25,6 @@
   "selectWarehouse": "First select a city",
   "paymentMethod": "Payment Method",
   "cardPayment": "Card Payment",
-  "cashPayment": "Cash on Delivery"
+  "cashPayment": "Cash on Delivery",
+  "searchPlaceholder": "Search for items..."
 }

@@ -25,5 +25,6 @@
   "selectWarehouse": "Спочатку оберіть місто",
   "paymentMethod": "Спосіб оплати",
   "cardPayment": "Оплата карткою",
-  "cashPayment": "Оплата при отриманні"
+  "cashPayment": "Оплата при отриманні",
+  "searchPlaceholder": "Пошук товарів..."
 }
