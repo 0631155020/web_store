@@ -52,18 +52,28 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p>${photo.description || 'Без описания'}</p>
                         <p class="price">$${photo.price.toFixed(2)}</p>
                         ${sizesHTML}
-                        <button class="details-btn" data-id="${photo.id}">Детали</button>
                         <button class="add-to-cart-btn" data-id="${photo.id}">Добавить в корзину</button>
                     </div>
                 `;
                 galleryContainer.appendChild(galleryItem);
+
+                galleryItem.addEventListener('click', () => {
+                    showDetails(photo);
+                });
             });
 
             document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-                button.addEventListener('click', () => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation();
                     const photoId = button.dataset.id;
                     const photoToAdd = photos.find(p => p.id === photoId);
                     addToCart(photoToAdd);
+                });
+            });
+
+            document.querySelectorAll('.size-selector').forEach(selector => {
+                selector.addEventListener('click', (event) => {
+                    event.stopPropagation();
                 });
             });
 
