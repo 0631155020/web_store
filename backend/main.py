@@ -6,11 +6,12 @@ from typing import List, Optional
 import os
 import smtplib
 import time
+import json
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import httpx
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, status
+from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -35,6 +36,7 @@ class PhotoDB(Base):
     description = Column(String, nullable=True)
     path = Column(String)
     price = Column(Float, default=0.0)
+    sizes = Column(JSON, nullable=True)
 
 class Order(Base):
     __tablename__ = "orders"
@@ -62,6 +64,7 @@ class Photo(BaseModel):
     description: Optional[str] = None
     path: str
     price: Optional[float] = 0.0
+    sizes: Optional[List[str]] = None
 
     class Config:
         orm_mode = True
@@ -258,8 +261,9 @@ def get_db():
 # --- API Endpoints ---
 @app.post("/photos", response_model=Photo)
 async def upload_photo(
-    description: Optional[str] = None,
-    price: float = 0.0,
+    description: Optional[str] = Form(None),
+    price: float = Form(0.0),
+    sizes: Optional[str] = Form('[]'),
     file: UploadFile = File(...),
     username: str = Depends(get_current_username),
     db=Depends(get_db)
@@ -271,12 +275,15 @@ async def upload_photo(
     with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
 
+    sizes_list = json.loads(sizes) if sizes else []
+
     new_photo = PhotoDB(
         id=str(uuid.uuid4()),
         filename=file.filename,
         description=description,
         path=f"/uploads/{unique_filename}",
-        price=price
+        price=price,
+        sizes=sizes_list
     )
     db.add(new_photo)
     db.commit()

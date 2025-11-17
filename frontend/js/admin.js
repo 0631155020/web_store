@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fileInput');
     const descriptionInput = document.getElementById('descriptionInput');
     const priceInput = document.getElementById('priceInput');
+    const sizesInput = document.getElementById('sizesInput');
 
     // --- Функция для отображения галереи ---
     const fetchAndDisplayPhotos = async () => {
@@ -72,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const file = fileInput.files[0];
         const description = descriptionInput.value;
         const price = priceInput.value;
+        const sizes = sizesInput.value.split(',').map(s => s.trim()).filter(Boolean);
 
         if (!file || !price) {
             alert('Пожалуйста, выберите файл и укажите цену.');
@@ -80,11 +82,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData();
         formData.append('file', file);
-
-        const uploadURL = `/photos?description=${encodeURIComponent(description)}&price=${price}`;
+        formData.append('description', description);
+        formData.append('price', price);
+        formData.append('sizes', JSON.stringify(sizes));
 
         try {
-            const response = await fetch(uploadURL, { method: 'POST', body: formData });
+            const response = await fetch('/photos', {
+                method: 'POST',
+                body: formData
+            });
             if (!response.ok) throw new Error('Ошибка загрузки');
 
             uploadForm.reset();

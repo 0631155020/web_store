@@ -4,7 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartIcon = document.getElementById('cartIcon');
     const cartCount = document.getElementById('cartCount');
     const cartModal = document.getElementById('cartModal');
+    const detailsModal = document.getElementById('detailsModal');
     const closeButton = document.querySelector('.close-button');
+    const closeDetailsButton = detailsModal.querySelector('.close-button');
     const cartItems = document.getElementById('cartItems');
     const cartTotal = document.getElementById('cartTotal');
     const checkoutButton = document.getElementById('checkoutButton');
@@ -40,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="info">
                         <p>${photo.description || 'Без описания'}</p>
                         <p class="price">$${photo.price.toFixed(2)}</p>
+                        <button class="details-btn" data-id="${photo.id}">Детали</button>
                         <button class="add-to-cart-btn" data-id="${photo.id}">Добавить в корзину</button>
                     </div>
                 `;
@@ -54,9 +57,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
 
+            document.querySelectorAll('.details-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const photoId = button.dataset.id;
+                    const photoToShow = photos.find(p => p.id === photoId);
+                    showDetails(photoToShow);
+                });
+            });
+
         } catch (error) {
             console.error('Ошибка при загрузке фото:', error);
         }
+    };
+
+    const showDetails = (photo) => {
+        const detailsContent = document.getElementById('detailsContent');
+        detailsContent.innerHTML = `
+            <h3>${photo.description || 'Детали'}</h3>
+            <p><strong>Доступные размеры:</strong></p>
+            <ul>
+                ${photo.sizes && photo.sizes.length > 0 ? photo.sizes.map(size => `<li>${size}</li>`).join('') : '<li>Нет информации о размерах</li>'}
+            </ul>
+        `;
+        detailsModal.style.display = 'block';
     };
 
     // --- Функции для работы с корзиной ---
@@ -142,9 +165,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Управление модальным окном ---
     cartIcon.addEventListener('click', () => cartModal.style.display = 'block');
     closeButton.addEventListener('click', () => cartModal.style.display = 'none');
+    closeDetailsButton.addEventListener('click', () => detailsModal.style.display = 'none');
     window.addEventListener('click', (event) => {
         if (event.target === cartModal) {
             cartModal.style.display = 'none';
+        }
+        if (event.target === detailsModal) {
+            detailsModal.style.display = 'none';
         }
     });
 
