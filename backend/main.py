@@ -6,11 +6,12 @@ from typing import List, Optional
 import os
 import smtplib
 import time
+import json
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import httpx
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, status
+from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -35,6 +36,7 @@ class PhotoDB(Base):
     description = Column(String, nullable=True)
     path = Column(String)
     price = Column(Float, default=0.0)
+    sizes = Column(JSON, nullable=True)
 
 class Order(Base):
     __tablename__ = "orders"
@@ -54,6 +56,7 @@ class OrderItem(Base):
     order_id = Column(String)
     photo_id = Column(String)
     quantity = Column(Integer)
+    size = Column(String, nullable=True)
 
 # --- Pydantic Models ---
 class Photo(BaseModel):
@@ -62,6 +65,7 @@ class Photo(BaseModel):
     description: Optional[str] = None
     path: str
     price: Optional[float] = 0.0
+    sizes: Optional[List[str]] = None
 
     class Config:
         orm_mode = True
@@ -69,6 +73,7 @@ class Photo(BaseModel):
 class OrderItemSchema(BaseModel):
     photo_id: str
     quantity: int
+    size: Optional[str] = None
 
 class NovaPoshtaSchema(BaseModel):
     city: str
@@ -124,7 +129,9 @@ def send_order_email(order_details: dict):
         for item in order_details["items"]:
             description = item.get('description', 'N/A')
             quantity = item.get('quantity', 'N/A')
-            items_html += f"<li>{description} (Quantity: {quantity})</li>"
+            size = item.get('size', '')
+            size_html = f" (Size: {size})" if size else ""
+            items_html += f"<li>{description}{size_html} (Quantity: {quantity})</li>"
         items_html += "</ul>"
 
     html = f"""
@@ -258,8 +265,9 @@ def get_db():
 # --- API Endpoints ---
 @app.post("/photos", response_model=Photo)
 async def upload_photo(
-    description: Optional[str] = None,
-    price: float = 0.0,
+    description: Optional[str] = Form(None),
+    price: float = Form(0.0),
+    sizes: Optional[str] = Form('[]'),
     file: UploadFile = File(...),
     username: str = Depends(get_current_username),
     db=Depends(get_db)
@@ -271,12 +279,15 @@ async def upload_photo(
     with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
 
+    sizes_list = json.loads(sizes) if sizes else []
+
     new_photo = PhotoDB(
         id=str(uuid.uuid4()),
         filename=file.filename,
         description=description,
         path=f"/uploads/{unique_filename}",
-        price=price
+        price=price,
+        sizes=sizes_list
     )
     db.add(new_photo)
     db.commit()
@@ -331,7 +342,8 @@ async def create_order(order: OrderSchema, db=Depends(get_db)):
             id=str(uuid.uuid4()),
             order_id=order_id,
             photo_id=item.photo_id,
-            quantity=item.quantity
+            quantity=item.quantity,
+            size=item.size
         )
         db.add(new_item)
 
@@ -343,7 +355,8 @@ async def create_order(order: OrderSchema, db=Depends(get_db)):
         if photo:
             detailed_items.append({
                 "description": photo.description,
-                "quantity": item.quantity
+                "quantity": item.quantity,
+                "size": item.size
             })
 
     order_details = {

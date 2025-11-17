@@ -4,7 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartIcon = document.getElementById('cartIcon');
     const cartCount = document.getElementById('cartCount');
     const cartModal = document.getElementById('cartModal');
+    const detailsModal = document.getElementById('detailsModal');
     const closeButton = document.querySelector('.close-button');
+    const closeDetailsButton = detailsModal.querySelector('.close-button');
     const cartItems = document.getElementById('cartItems');
     const cartTotal = document.getElementById('cartTotal');
     const checkoutButton = document.getElementById('checkoutButton');
@@ -35,22 +37,51 @@ document.addEventListener('DOMContentLoaded', () => {
             photos.forEach(photo => {
                 const galleryItem = document.createElement('div');
                 galleryItem.className = 'gallery-item';
+                const sizesHTML = photo.sizes && photo.sizes.length > 0 ? `
+                    <div class="size-selector">
+                        ${photo.sizes.map((size, index) => `
+                            <input type="radio" id="size-${photo.id}-${index}" name="size-${photo.id}" value="${size}" ${index === 0 ? 'checked' : ''}>
+                            <label for="size-${photo.id}-${index}">${size}</label>
+                        `).join('')}
+                    </div>
+                ` : '';
+
                 galleryItem.innerHTML = `
                     <img src="${photo.path}" alt="${photo.description || photo.filename}">
                     <div class="info">
                         <p>${photo.description || 'Без описания'}</p>
                         <p class="price">$${photo.price.toFixed(2)}</p>
+                        ${sizesHTML}
                         <button class="add-to-cart-btn" data-id="${photo.id}">Добавить в корзину</button>
                     </div>
                 `;
                 galleryContainer.appendChild(galleryItem);
+
+                galleryItem.addEventListener('click', () => {
+                    showDetails(photo);
+                });
             });
 
             document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-                button.addEventListener('click', () => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation();
                     const photoId = button.dataset.id;
                     const photoToAdd = photos.find(p => p.id === photoId);
                     addToCart(photoToAdd);
+                });
+            });
+
+            document.querySelectorAll('.size-selector').forEach(selector => {
+                selector.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                });
+            });
+
+            document.querySelectorAll('.details-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const photoId = button.dataset.id;
+                    const photoToShow = photos.find(p => p.id === photoId);
+                    showDetails(photoToShow);
                 });
             });
 
@@ -59,20 +90,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const showDetails = (photo) => {
+        const detailsContent = document.getElementById('detailsContent');
+        detailsContent.innerHTML = `
+            <h3>${photo.description || 'Детали'}</h3>
+            <p><strong>Доступные размеры:</strong></p>
+            <ul>
+                ${photo.sizes && photo.sizes.length > 0 ? photo.sizes.map(size => `<li>${size}</li>`).join('') : '<li>Нет информации о размерах</li>'}
+            </ul>
+        `;
+        detailsModal.style.display = 'block';
+    };
+
     // --- Функции для работы с корзиной ---
     const addToCart = (photo) => {
-        const existingItem = cart.find(item => item.photo.id === photo.id);
+        const sizeSelector = document.querySelector(`input[name="size-${photo.id}"]:checked`);
+        const size = sizeSelector ? sizeSelector.value : null;
+
+        if (photo.sizes && photo.sizes.length > 0 && !size) {
+            alert('Пожалуйста, выберите размер.');
+            return;
+        }
+
+        const existingItem = cart.find(item => item.photo.id === photo.id && item.size === size);
         if (existingItem) {
             existingItem.quantity++;
         } else {
-            cart.push({ photo: photo, quantity: 1 });
+            cart.push({ photo: photo, quantity: 1, size: size });
         }
         saveCart();
         updateCartView();
     };
 
-    const decreaseQuantity = (photoId) => {
-        const itemIndex = cart.findIndex(item => item.photo.id === photoId);
+    const decreaseQuantity = (photoId, size) => {
+        const itemIndex = cart.findIndex(item => item.photo.id === photoId && item.size === size);
         if (itemIndex > -1) {
             cart[itemIndex].quantity--;
             if (cart[itemIndex].quantity === 0) {
@@ -83,8 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCartView();
     };
 
-    const removeAllFromCart = (photoId) => {
-        cart = cart.filter(item => item.photo.id !== photoId);
+    const removeAllFromCart = (photoId, size) => {
+        cart = cart.filter(item => !(item.photo.id === photoId && item.size === size));
         saveCart();
         updateCartView();
     };
@@ -100,9 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
             cartItem.className = 'cart-item';
             const itemTotal = item.photo.price * item.quantity;
             cartItem.innerHTML = `
-                <span>${item.photo.description || item.photo.filename}</span>
+                <span>${item.photo.description || item.photo.filename}${item.size ? ` (${item.size})` : ''}</span>
                 <span class="cart-item-controls">
-                    <button class="decrease-quantity-btn" data-id="${item.photo.id}">-</button>
+                    <button class="decrease-quantity-btn" data-id="${item.photo.id}" data-size="${item.size}">-</button>
                     <span class="quantity">x${item.quantity}</span>
                     <button class="increase-quantity-btn" data-id="${item.photo.id}">+</button>
                 </span>
@@ -127,14 +178,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.decrease-quantity-btn').forEach(button => {
             button.addEventListener('click', () => {
                 const photoId = button.dataset.id;
-                decreaseQuantity(photoId);
+                const size = button.dataset.size;
+                decreaseQuantity(photoId, size);
             });
         });
 
         document.querySelectorAll('.remove-all-btn').forEach(button => {
             button.addEventListener('click', () => {
                 const photoId = button.dataset.id;
-                removeAllFromCart(photoId);
+                const size = button.dataset.size;
+                removeAllFromCart(photoId, size);
             });
         });
     };
@@ -142,9 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Управление модальным окном ---
     cartIcon.addEventListener('click', () => cartModal.style.display = 'block');
     closeButton.addEventListener('click', () => cartModal.style.display = 'none');
+    closeDetailsButton.addEventListener('click', () => detailsModal.style.display = 'none');
     window.addEventListener('click', (event) => {
         if (event.target === cartModal) {
             cartModal.style.display = 'none';
+        }
+        if (event.target === detailsModal) {
+            detailsModal.style.display = 'none';
         }
     });
 
