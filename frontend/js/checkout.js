@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cartItem.innerHTML = `
                 <img src="${item.photo.path}" alt="${item.photo.description || item.photo.filename}">
                 <div class="item-details">
-                    <p>${item.photo.description || 'Без описания'}</p>
+                    <p>${item.photo.description || 'Без описания'}${item.size ? ` (${item.size})` : ''}</p>
                     <p>Qty: ${item.quantity}</p>
                     <p>$${itemTotal.toFixed(2)}</p>
                 </div>
@@ -80,7 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             items: cart.map(item => ({
                 photo_id: item.photo.id,
-                quantity: item.quantity
+                quantity: item.quantity,
+                size: item.size
             }))
         };
 

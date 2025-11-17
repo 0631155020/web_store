@@ -157,3 +157,19 @@ h2, h3 {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
+input[type="radio"] {
+    display: none;
+}
+label {
+    display: block;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+input[type="radio"]:checked + label {
+    border-color: #000;
+    background-color: #f0f0f0;
+}
