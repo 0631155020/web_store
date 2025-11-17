@@ -56,6 +56,7 @@ class OrderItem(Base):
     order_id = Column(String)
     photo_id = Column(String)
     quantity = Column(Integer)
+    size = Column(String, nullable=True)
 
 # --- Pydantic Models ---
 class Photo(BaseModel):
@@ -72,6 +73,7 @@ class Photo(BaseModel):
 class OrderItemSchema(BaseModel):
     photo_id: str
     quantity: int
+    size: Optional[str] = None
 
 class NovaPoshtaSchema(BaseModel):
     city: str
@@ -127,7 +129,9 @@ def send_order_email(order_details: dict):
         for item in order_details["items"]:
             description = item.get('description', 'N/A')
             quantity = item.get('quantity', 'N/A')
-            items_html += f"<li>{description} (Quantity: {quantity})</li>"
+            size = item.get('size', '')
+            size_html = f" (Size: {size})" if size else ""
+            items_html += f"<li>{description}{size_html} (Quantity: {quantity})</li>"
         items_html += "</ul>"
 
     html = f"""
@@ -338,7 +342,8 @@ async def create_order(order: OrderSchema, db=Depends(get_db)):
             id=str(uuid.uuid4()),
             order_id=order_id,
             photo_id=item.photo_id,
-            quantity=item.quantity
+            quantity=item.quantity,
+            size=item.size
         )
         db.add(new_item)
 
@@ -350,7 +355,8 @@ async def create_order(order: OrderSchema, db=Depends(get_db)):
         if photo:
             detailed_items.append({
                 "description": photo.description,
-                "quantity": item.quantity
+                "quantity": item.quantity,
+                "size": item.size
             })
 
     order_details = {
