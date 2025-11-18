@@ -183,16 +183,32 @@ async def find_warehouses(request: dict):
     if not city_ref:
         raise HTTPException(status_code=400, detail="City ref is required")
 
+    all_warehouses = []
+    page = 1
+    limit = 500
+
     async with httpx.AsyncClient() as client:
-        response = await client.post(NOVA_POSHTA_API_URL, json={
-            "apiKey": NOVA_POSHTA_API_KEY,
-            "modelName": "AddressGeneral",
-            "calledMethod": "getWarehouses",
-            "methodProperties": {
-                "CityRef": city_ref
-            }
-        })
-        return response.json()
+        while True:
+            response = await client.post(NOVA_POSHTA_API_URL, json={
+                "apiKey": NOVA_POSHTA_API_KEY,
+                "modelName": "Address",
+                "calledMethod": "getWarehouses",
+                "methodProperties": {
+                    "CityRef": city_ref,
+                    "Page": str(page),
+                    "Limit": str(limit)
+                }
+            })
+            data = response.json()
+            if data["success"] and data["data"]:
+                all_warehouses.extend(data["data"])
+                if len(data["data"]) < limit:
+                    break
+                page += 1
+            else:
+                break
+
+    return {"success": True, "data": all_warehouses, "errors": [], "warnings": [], "info": []}
 
 # --- CORS Middleware ---
 app.add_middleware(
