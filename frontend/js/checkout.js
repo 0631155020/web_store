@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             novaPoshta: {
                 city: $(citySelect).select2('data')[0].text,
                 cityRef: formData.get('novaPoshtaCity'),
-                warehouse: warehouseSelect.options[warehouseSelect.selectedIndex].text,
+                warehouse: $(warehouseSelect).select2('data')[0] ? $(warehouseSelect).select2('data')[0].text : '',
                 warehouseRef: formData.get('novaPoshtaWarehouse'),
             },
             items: cart.map(item => ({
@@ -125,6 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     allowClear: true
                 }).on('select2:select', function (e) {
                     // Cброс и загрузка отделений при выборе города
+                    if ($(warehouseSelect).data('select2')) {
+                        $(warehouseSelect).select2('destroy');
+                    }
                     warehouseSelect.innerHTML = '<option value="" disabled selected>Спочатку оберіть місто</option>';
                     loadWarehouses();
                 });
@@ -138,7 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const cityRef = citySelect.value;
         if (!cityRef) return;
 
-        warehouseSelect.innerHTML = '<option value="" disabled selected>Загрузка...</option>';
+        if ($(warehouseSelect).data('select2')) {
+            $(warehouseSelect).select2('destroy');
+        }
+        $(warehouseSelect).html('').select2({
+            placeholder: 'Загрузка...'
+        });
 
         try {
             const response = await fetch('/api/novaposhta/warehouses', {
@@ -148,18 +156,33 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const data = await response.json();
 
-            warehouseSelect.innerHTML = '<option value="" disabled selected>Оберіть відділення</option>';
+            $(warehouseSelect).html('');
+
             if (data.success && data.data.length > 0) {
-                data.data.forEach(warehouse => {
-                    const option = document.createElement('option');
-                    option.value = warehouse.Ref;
-                    option.textContent = warehouse.Description;
-                    warehouseSelect.appendChild(option);
+                const warehouses = data.data.map(warehouse => ({
+                    id: warehouse.Ref,
+                    text: warehouse.Description
+                }));
+                $(warehouseSelect).select2({
+                    data: warehouses,
+                    placeholder: 'Оберіть відділення',
+                    allowClear: true
+                });
+            } else {
+                $(warehouseSelect).select2({
+                    placeholder: 'Відділення не знайдено',
+                    allowClear: true
                 });
             }
         } catch (error) {
             console.error('Ошибка загрузки отделений:', error);
-            warehouseSelect.innerHTML = '<option value="" disabled selected>Помилка завантаження</option>';
+            if ($(warehouseSelect).data('select2')) {
+                $(warehouseSelect).select2('destroy');
+            }
+            $(warehouseSelect).html('').select2({
+                placeholder: 'Помилка завантаження',
+                allowClear: true
+            });
         }
     };
 
@@ -167,5 +190,4 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCart();
     loadAllCities();
     deliveryForm.addEventListener('submit', handleOrderSubmit);
-    citySelect.addEventListener('change', loadWarehouses);
 });
