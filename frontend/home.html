@@ -5,22 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Пижамы</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=shopping_bag" />
+</head>
 </head>
 <body>
 
     <header>
-        <h1 data-i18n-key="pyjamas">Пижамы</h1>
-       
-        <div class="controls-container">
-            <div class="language-switcher">
-                <span class="lang-option active" data-lang="ua">UA</span>
-                <span class="lang-option" data-lang="ru">RU</span>
-                <span class="lang-option" data-lang="en">EN</span>
+         <section id="header">
+        <a href="#"><img src="/static/photos/logo.jpg" class="logo" alt="logo"></a>
+        <div style="display: flex; align-items: center;">  
+            <div>
+                <ul id="navbar">
+                    <li><a class="active" href="main.html">Home</a></li>
+                    <li><a href="home.html">Products</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                     <div class="language-switcher-container">
+                        <div class="current-lang">
+                            <span id="activeLang">UA</span>
+                        </div>
+
+                        <div class="language-dropdown" id="langDropdown">
+                            <span class="lang-option active" data-lang="ua">UA</span>
+                            <span class="lang-option" data-lang="ru">RU</span>
+                            <span class="lang-option" data-lang="en">EN</span>
+                        </div>
+                     </div>
+                        <div class="cart-icon" id="cartIcon">
+                            <li>
+                                <span class="material-symbols-outlined">
+                                    shopping_bag
+                                </span>
+                            </li>
+                        </div>
+                    </li>
+                </ul>
             </div>
-            <div class="cart-icon" id="cartIcon">
-                🛒 <span id="cartCount">0</span>
-            </div>
-        </div>
+
+           
+        </div>  
+    </section>
     </header>
 
     <main>
@@ -48,5 +72,6 @@
 
     <script type="module" src="/static/js/home.js?v=1.1"></script>
     <script src="/static/js/i18n.js"></script>
+    <script src="/static/js/main.js"></script>
 </body>
 </html>

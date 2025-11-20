@@ -400,11 +400,15 @@ async def get_uploaded_file(filename: str):
 
 # --- HTML Endpoints ---
 @app.get("/", response_class=HTMLResponse)
-async def read_home():
-    return FileResponse(FRONTEND_DIR / "home.html")
+async def read_main():
+    return FileResponse(FRONTEND_DIR / "main.html")
+
+@app.get("/main.html", response_class=HTMLResponse)
+async def read_home_alias():
+    return FileResponse(FRONTEND_DIR / "main.html")
 
 @app.get("/home.html", response_class=HTMLResponse)
-async def read_home_alias():
+async def read_home():
     return FileResponse(FRONTEND_DIR / "home.html")
 
 @app.get("/admin", response_class=HTMLResponse)
