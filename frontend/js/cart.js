@@ -3,7 +3,7 @@ let cart = [];
 let photos = []; // This will be populated by the calling script
 
 // --- DOM Elements (to be set by the calling script) ---
-let cartCount, cartItems, cartTotal;
+let cartCount, cartItems, cartTotal, cartModal;
 
 // --- Functions for localStorage ---
 const saveCart = () => {
@@ -31,6 +31,9 @@ const addToCart = (photo, size) => {
     }
     saveCart();
     updateCartView();
+    if (cartModal) {
+        cartModal.style.display = 'block';
+    }
 };
 
 const decreaseQuantity = (photoId, size) => {
@@ -113,12 +116,12 @@ export const initializeCart = (config) => {
     cartCount = config.cartCount;
     cartItems = config.cartItems;
     cartTotal = config.cartTotal;
+    cartModal = config.cartModal; // Set the cartModal
     photos = config.photos; // The calling script will provide the photos array
     loadCart();
 
     // Modal Management
     const cartIcon = config.cartIcon;
-    const cartModal = config.cartModal;
     const closeButton = config.closeButton;
     const checkoutButton = config.checkoutButton;
 
