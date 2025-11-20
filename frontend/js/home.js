@@ -21,46 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Gallery Display ---
-    const fetchAndDisplayPhotos = async () => {
-        try {
-            if (!galleryContainer) return;
-            const response = await fetch('/photos');
-            photos.push(...await response.json()); // Populate the shared photos array
-
-            galleryContainer.innerHTML = '';
-            photos.forEach(photo => {
-                const galleryItem = document.createElement('a');
-                galleryItem.className = 'gallery-item';
-                galleryItem.href = `/product-detail.html?id=${photo.id}`;
-
-                galleryItem.innerHTML = `
-                    <img src="${photo.path}" alt="${photo.description || photo.filename}">
-                    <div class="info">
-                        <p>${photo.description || 'No description'}</p>
-                        <p class="price">$${photo.price.toFixed(2)}</p>
-                    </div>
-                `;
-                galleryContainer.appendChild(galleryItem);
-            });
-
-        } catch (error) {
-            console.error('Error loading photos:', error);
-        }
-    };
-
-    // --- Photo Filtering ---
-    const filterPhotos = (query) => {
-        const lowerCaseQuery = query.toLowerCase();
-        const filteredPhotos = photos.filter(photo => {
-            const description = photo.description || '';
-            return description.toLowerCase().includes(lowerCaseQuery);
-        });
-        displayFilteredPhotos(filteredPhotos);
-    };
-
-    const displayFilteredPhotos = (filteredPhotos) => {
+    const displayPhotos = (photosToDisplay) => {
+        if (!galleryContainer) return;
         galleryContainer.innerHTML = '';
-        filteredPhotos.forEach(photo => {
+        photosToDisplay.forEach(photo => {
             const galleryItem = document.createElement('div');
             galleryItem.className = 'gallery-item';
 
@@ -88,6 +52,26 @@ document.addEventListener('DOMContentLoaded', () => {
             infoDiv.appendChild(button);
             galleryContainer.appendChild(galleryItem);
         });
+    };
+
+    const fetchAndDisplayPhotos = async () => {
+        try {
+            const response = await fetch('/photos');
+            photos.push(...await response.json()); // Populate the shared photos array
+            displayPhotos(photos);
+        } catch (error) {
+            console.error('Error loading photos:', error);
+        }
+    };
+
+    // --- Photo Filtering ---
+    const filterPhotos = (query) => {
+        const lowerCaseQuery = query.toLowerCase();
+        const filteredPhotos = photos.filter(photo => {
+            const description = photo.description || '';
+            return description.toLowerCase().includes(lowerCaseQuery);
+        });
+        displayPhotos(filteredPhotos);
     };
 
     // --- Search Event Listener ---
