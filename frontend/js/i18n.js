@@ -1,6 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const languageSwitcher = document.querySelector('.language-switcher');
+    const languageSwitcher = document.querySelector('.language-switcher-container');
     let currentLanguage = 'ua'; // Default language
+
+    if (languageSwitcher) {
+        const currentLang = languageSwitcher.querySelector('.current-lang');
+        const langDropdown = languageSwitcher.querySelector('.language-dropdown');
+        const langOptions = langDropdown.querySelectorAll('.lang-option');
+        const activeLangDisplay = languageSwitcher.querySelector('#activeLang');
+
+        currentLang.addEventListener('click', function() {
+            langDropdown.classList.toggle('show');
+        });
+
+        langOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const lang = this.getAttribute('data-lang');
+                loadLanguage(lang);
+                activeLangDisplay.textContent = lang.toUpperCase();
+                langDropdown.classList.remove('show');
+            });
+        });
+
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.language-switcher-container')) {
+                if (langDropdown.classList.contains('show')) {
+                    langDropdown.classList.remove('show');
+                }
+            }
+        });
+    }
 
     async function loadLanguage(lang) {
         try {
@@ -41,14 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    languageSwitcher.addEventListener('click', (event) => {
-        if (event.target.classList.contains('lang-option')) {
-            const lang = event.target.getAttribute('data-lang');
-            if (lang !== currentLanguage) {
-                loadLanguage(lang);
-            }
-        }
-    });
 
     // Load default language
     loadLanguage(currentLanguage);
