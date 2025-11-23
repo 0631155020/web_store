@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         cart.forEach(item => {
-            const itemTotal = item.photo.price * item.quantity;
+            const itemTotal = parseFloat(item.photo.price) * item.quantity;
             subtotal += itemTotal;
 
             const cartItem = document.createElement('div');

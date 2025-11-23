@@ -17,7 +17,7 @@ const loadCart = () => {
 };
 
 // --- Cart Management Functions ---
-const addToCart = (photo, size) => {
+export const addToCart = (photo, size) => {
     if (photo.sizes && photo.sizes.length > 0 && !size) {
         alert('Please select a size.');
         return;
@@ -65,7 +65,7 @@ const updateCartView = () => {
     cart.forEach(item => {
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
-        const itemTotal = item.photo.price * item.quantity;
+        const itemTotal = parseFloat(item.photo.price) * item.quantity;
         cartItem.innerHTML = `
             <span>${item.photo.description || item.photo.filename}${item.size ? ` (${item.size})` : ''}</span>
             <span class="cart-item-controls">
@@ -147,5 +147,3 @@ export const initializeCart = (config) => {
         });
     }
 };
-
-export { addToCart };
