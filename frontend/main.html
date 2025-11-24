@@ -28,13 +28,12 @@
                             <span class="lang-option" data-lang="en">EN</span>
                         </div>
                      </div>
-                     <div class="cart-icon" id="cartIcon">
-                        <li>
-                            <span class="material-symbols-outlined">
-                                shopping_bag
-                            </span>
-                        </li>
-                    </div>
+                    <li class="cart-container" id="cartIcon">
+                        <span class="material-symbols-outlined">
+                            shopping_bag
+                        </span>
+                        <span id="cartCount">0</span>
+                    </li>
                 </ul>
             </div>
 
@@ -50,7 +49,30 @@
         <a href="home.html"><button>Shop Now &#8594;</button></a>
     </section>
 
+    <main>
+        <section class="search-section">
+            <input type="text" id="searchInput" placeholder="Search for items..." data-i18n-key="searchPlaceholder">
+        </section>
+        <section class="gallery">
+            <h2 data-i18n-key="collection">Колекция</h2>
+            <div id="galleryContainer" class="gallery-container">
+                <!-- Фотографии будут загружены сюда с помощью JavaScript -->
+            </div>
+        </section>
+    </main>
 
+    <!-- Модальное окно корзины (скрыто по умолчанию) -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 data-i18n-key="cart">Корзина</h2>
+            <div id="cartItems"></div>
+            <p><strong data-i18n-key="total">Итого:</strong> $<span id="cartTotal">0.00</span></p>
+            <button id="checkoutButton" data-i18n-key="checkout">Оформить заказ</button>
+        </div>
+    </div>
+
+    <script type="module" src="/static/js/home.js?v=1.1"></script>
     <script src="/static/js/i18n.js"></script>
     <script src="/static/js/navbar.js"></script>
 </body>
