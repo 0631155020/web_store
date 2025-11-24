@@ -358,10 +358,15 @@ main {
     font-weight: 700;
 }
 
+li.cart-container {
+    position: relative;
+    display: inline-block;
+}
+
 #cartCount {
     position: absolute;
-    top: -5px;
-    right: -10px;
+    top: -8px;
+    right: -12px;
     background-color: red;
     color: white;
     border-radius: 50%;
