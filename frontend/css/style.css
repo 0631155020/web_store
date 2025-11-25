@@ -378,3 +378,160 @@ li.cart-container {
     align-items: center;
     min-width: 20px;
 }
+
+/* Product Detail Page */
+#product-detail-container.container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.product-gallery {
+    display: flex;
+    flex: 1; /* Takes up half the space */
+    gap: 1rem;
+}
+
+.thumbnails {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.thumbnail:hover, .variant-thumbnail:hover {
+    border-color: #000;
+}
+
+.main-product-image {
+    max-width: calc(100% - 70px); /* Adjust based on thumbnail width and gap */
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.product-info {
+    flex: 1; /* Takes up the other half */
+    display: flex;
+    flex-direction: column;
+}
+
+.product-info h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.product-info .product-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+}
+
+.product-info .price {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.variant-selector, .size-selector-container {
+    margin-bottom: 1.5rem;
+}
+
+.variant-selector p, .size-selector-container p {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.variant-options {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.variant-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid #eee;
+    border-radius: 4px;
+}
+
+.variant-thumbnail.selected {
+    border-color: #000;
+}
+
+.size-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.size-selector input[type=radio] {
+    display: none;
+}
+
+.size-selector label {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.size-selector input[type=radio]:checked + label {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.size-selector label:hover {
+    border-color: #888;
+}
+
+
+.add-to-cart-btn {
+    width: 100%;
+    padding: 1rem;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 25px; /* Pill shape */
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: auto; /* Pushes button to the bottom */
+}
+
+.add-to-cart-btn:hover {
+    background-color: #333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #product-detail-container.container {
+        flex-direction: column;
+    }
+
+    .product-gallery {
+        flex-direction: column-reverse; /* Main image on top */
+    }
+
+    .thumbnails {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .main-product-image {
+        max-width: 100%;
+    }
+}
