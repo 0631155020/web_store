@@ -177,7 +177,7 @@ main {
 }
 
 .size-selector {
-    display: flex;
+    display: inline-flex;
     gap: 5px;
     background-color: #444;
     padding: 5px;
@@ -382,6 +382,7 @@ li.cart-container {
 /* Product Detail Page */
 #product-detail-container.container {
     display: flex;
+    flex-direction: row;
     gap: 2rem;
     padding: 2rem;
     max-width: 1200px;
@@ -470,7 +471,7 @@ li.cart-container {
 }
 
 .size-selector {
-    display: flex;
+    /* display: flex; */
     flex-wrap: wrap;
     gap: 0.5rem;
 }
