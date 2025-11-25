@@ -49,6 +49,7 @@ class Order(Base):
     deliveryMethod = Column(String)
     paymentMethod = Column(String)
     novaPoshta = Column(JSON, nullable=True)
+    messenger = Column(String, nullable=True)
 
 class OrderItem(Base):
     __tablename__ = "order_items"
@@ -86,6 +87,7 @@ class OrderSchema(BaseModel):
     phone: str
     deliveryMethod: str
     paymentMethod: str
+    messenger: Optional[str] = None
     novaPoshta: Optional[NovaPoshtaSchema] = None
     items: List[OrderItemSchema]
 
@@ -143,6 +145,7 @@ def send_order_email(order_details: dict):
         <p><strong>Name:</strong> {order_details['firstName']} {order_details['lastName']}</p>
         {address_html}
         <p><strong>Phone:</strong> {order_details['phone']}</p>
+        <p><strong>Messenger:</strong> {order_details.get('messenger', 'N/A')}</p>
         <p><strong>Delivery Method:</strong> {order_details['deliveryMethod']}</p>
         <p><strong>Payment Method:</strong> {order_details['paymentMethod']}</p>
         {nova_poshta_details_html}
@@ -349,7 +352,8 @@ async def create_order(order: OrderSchema, db=Depends(get_db)):
         phone=order.phone,
         deliveryMethod=order.deliveryMethod,
         paymentMethod=order.paymentMethod,
-        novaPoshta=nova_poshta_data
+        novaPoshta=nova_poshta_data,
+        messenger=order.messenger
     )
     db.add(new_order)
 
@@ -385,6 +389,7 @@ async def create_order(order: OrderSchema, db=Depends(get_db)):
         "deliveryMethod": new_order.deliveryMethod,
         "paymentMethod": new_order.paymentMethod,
         "novaPoshta": new_order.novaPoshta,
+        "messenger": new_order.messenger,
         "items": detailed_items
     }
     send_order_email(order_details)
