@@ -8,14 +8,13 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=shopping_bag" />
 </head>
 <body>
-    <header>
-         <section id="header">
-        <a href="#"><img src="/static/photos/logo.jpg" class="logo" alt="logo"></a>
-        <div style="display: flex; align-items: center;">
+    <section id="header">
+        <a href="main.html"><img src="/static/photos/logo.jpg" class="logo" alt="logo"></a>
+        <div style="display: flex; align-items: center;">  
             <div>
                 <ul id="navbar">
                     <li><a href="main.html">Home</a></li>
-                    <li><a class="active" href="home.html">Products</a></li>
+                    <li><a href="home.html">Products</a></li>
                     <li><a href="about.html">About</a></li>
                     <li><a href="contact.html">Contact</a></li>
                      <div class="language-switcher-container">
@@ -29,22 +28,16 @@
                             <span class="lang-option" data-lang="en">EN</span>
                         </div>
                      </div>
-                        <div class="cart-icon" id="cartIcon">
-                            <li>
-                                <span class="material-symbols-outlined">
-                                    shopping_bag
-                                </span>
-                                <span id="cartCount">0</span>
-                            </li>
-                        </div>
+                    <li class="cart-container" id="cartIcon">
+                        <span class="material-symbols-outlined">
+                            shopping_bag
+                        </span>
+                        <span id="cartCount">0</span>
                     </li>
                 </ul>
-            </div>
-
-
-        </div>
+            </div>           
+        </div>  
     </section>
-    </header>
 
     <main id="product-detail-container">
         <!-- Product details will be loaded here by JavaScript -->

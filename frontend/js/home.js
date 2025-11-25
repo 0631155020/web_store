@@ -40,16 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
             galleryItem.appendChild(link);
 
             const infoDiv = galleryItem.querySelector('.info');
-            const button = document.createElement('button');
-            button.className = 'add-to-cart-btn';
-            button.dataset.id = photo.id;
-            button.textContent = 'Add to Cart';
-            button.addEventListener('click', (event) => {
-                event.stopPropagation();
-                const size = photo.sizes && photo.sizes.length > 0 ? photo.sizes[0] : null;
-                addToCart(photo, size);
-            });
-            infoDiv.appendChild(button);
             galleryContainer.appendChild(galleryItem);
         });
     };
