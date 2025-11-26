@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             phone: formData.get('phone'),
             deliveryMethod: 'nova-poshta',
             paymentMethod: formData.get('paymentMethod'),
+            messenger: formData.get('messenger'),
             novaPoshta: {
                 city: $(citySelect).select2('data')[0].text,
                 cityRef: formData.get('novaPoshtaCity'),
