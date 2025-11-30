@@ -22,7 +22,6 @@
                         <div class="current-lang">
                             <span id="activeLang">UA</span>
                         </div>
-
                         <div class="language-dropdown" id="langDropdown">
                             <span class="lang-option active" data-lang="ua">UA</span>
                             <span class="lang-option" data-lang="ru">RU</span>
@@ -40,49 +39,12 @@
         </div>
     </section>
 
-    <main>
-        <section class="about-us-container">
-            <h1 data-i18n-key="aboutTitle">Ваш ідеальний комфорт починається тут</h1>
-            <p data-i18n-key="aboutIntro">Ми пропонуємо найкращі піжами, в яких кожен ваш ранок буде ніжним, а вечір — розслаблюючим. Наша мета — подарувати вам не просто одяг для сну, а справжній ритуал турботи про себе.</p>
-
-            <h2 data-i18n-key="orderTitle">Порядок оформлення замовлення</h2>
-            <p data-i18n-key="orderInfo">Після того, як ви оформите замовлення на сайті, вибравши моделі, що вам до вподоби, наш менеджер оперативно зв'яжеться з вами. Ми підтвердимо всі деталі та надамо необхідну інформацію для завершення замовлення, включаючи зручні варіанти оплати.</p>
-
-            <h2 data-i18n-key="deliveryTitle">Доставка та відправлення</h2>
-            <p data-i18n-key="deliveryInfo">Ми пропонуємо доставку перевізниками "Нова Пошта" та "Укрпошта":</p>
-            <ul>
-                <li><strong>"Нова Пошта":</strong> <span data-i18n-key="novaPoshtaInfo">Відправлення здійснюється за умови обов'язкової передоплати від 200 грн.</span></li>
-                <li><strong>"Укрпошта":</strong> <span data-i18n-key="ukrposhtaInfo">Доставка доступна лише за повної оплати вартості товару.</span></li>
-            </ul>
-            <p><strong><span data-i18n-key="shippingTimesTitle">Терміни відправки:</span></strong> <span data-i18n-key="shippingTimesInfo">Ваше замовлення буде відправлено протягом 1–2 робочих днів після 19:30.</span></p>
-
-            <h2 data-i18n-key="exchangeTitle">Умови обміну та перевірки товару</h2>
-            <p data-i18n-key="exchangeInfo">Ми прагнемо, щоб ви отримали ідеальний товар, і гарантуємо відповідність вашому замовленню.</p>
-            <ul>
-                <li><strong><span data-i18n-key="inspectionTitle">Перевірка:</span></strong> <span data-i18n-key="inspectionInfo">Обмін товару та перевірка на відповідність розміру, а також на наявність виробничого браку, можливі виключно під час огляду вашого замовлення безпосередньо у відділенні пошти.</span></li>
-                <li><strong><span data-i18n-key="buyerResponsibilityTitle">Відповідальність покупця:</span></strong> <span data-i18n-key="buyerResponsibilityInfo">Якщо ви забрали посилку з поштового відділення, це розцінюється як підтвердження того, що товар повністю вам підійшов і не має жодних дефектів.</span></li>
-                <li><strong><span data-i18n-key="failureToCollectTitle">Незабір посилки:</span></strong> <span data-i18n-key="failureToCollectInfo">Зверніть увагу: у разі відмови від отримання або незабору посилки, внесена вами передоплата не повертається. Крім того, витрати на доставку (200 грн) сплачуються покупцем. Будь ласка, приділіть необхідний час для ретельної перевірки у відділенні.</span></li>
-            </ul>
-
-            <h2 data-i18n-key="contactTitle">Зв'яжіться з нами</h2>
-            <p data-i18n-key="contactInfo">Ми завжди раді допомогти! Наші менеджери готові приділити вам персональну увагу та допомогти вирішити будь-яке питання, що стосується вашого замовлення чи вибору піжами. Ви можете зв'язатися з нами в розділі "Контакти" — ми з нетерпінням чекаємо на ваші запитання.</p>
-
-            <p data-i18n-key="finalThankYou">Дякуємо за розуміння та бажаємо приємних покупок!</p>
+    <main class="container">
+        <section class="about-section">
+            <h1 data-i18n-key="aboutUs">About Us</h1>
+            <p data-i18n-key="aboutText">Welcome to our store. We are dedicated to providing the best products and services to our customers. Our mission is to bring you high-quality items that you will love.</p>
         </section>
     </main>
-
-    <!-- Модальное окно корзины (скрыто по умолчанию) -->
-    <div id="cartModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h2 data-i18n-key="cart">Корзина</h2>
-            <div id="cartItems"></div>
-            <p><strong data-i18n-key="total">Итого:</strong> $<span id="cartTotal">0.00</span></p>
-            <button id="checkoutButton" data-i18n-key="checkout">Оформить заказ</button>
-        </div>
-    </div>
-
-    <script type="module" src="/static/js/home.js?v=1.1"></script>
     <script src="/static/js/navbar.js"></script>
 </body>
 </html>
