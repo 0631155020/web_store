@@ -47,5 +47,9 @@
   "failureToCollectInfo": "Please note: in case of refusal to receive or failure to collect the parcel, your submitted prepayment is non-refundable. Furthermore, delivery costs (200 UAH) must be paid by the buyer. Please dedicate the necessary time for a thorough inspection at the post office.",
   "contactTitle": "Contact Us",
   "contactInfo": "We are always happy to help! Our managers are ready to offer you personal attention and assist in resolving any question regarding your order or pajama selection. You can contact us in the \"Contacts\" section — we look forward to your questions.",
-  "finalThankYou": "Thank you for your understanding and we wish you pleasant shopping!"
+  "finalThankYou": "Thank you for your understanding and we wish you pleasant shopping!",
+  "home": "Home",
+  "products": "Products",
+  "about": "About",
+  "contact": "Contact"
 }
