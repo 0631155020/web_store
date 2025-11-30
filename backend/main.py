@@ -435,3 +435,7 @@ async def read_product_detail():
 @app.get("/product-detail.html", response_class=HTMLResponse)
 async def read_product_detail_alias():
     return FileResponse(FRONTEND_DIR / "product-detail.html")
+
+@app.get("/about.html", response_class=HTMLResponse)
+async def read_about():
+    return FileResponse(FRONTEND_DIR / "about.html")
