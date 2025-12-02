@@ -11,7 +11,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import httpx
-from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile, status
+from fastapi import BackgroundTasks, Depends, FastAPI, File, Form, HTTPException, UploadFile, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -296,7 +296,8 @@ async def upload_photo(
     file_path = UPLOADS_DIR / unique_filename
 
     with open(file_path, "wb") as buffer:
-        buffer.write(await file.read())
+        while chunk := await file.read(8192):
+            buffer.write(chunk)
 
     sizes_list = json.loads(sizes) if sizes else []
 
@@ -314,8 +315,8 @@ async def upload_photo(
     return new_photo
 
 @app.get("/photos", response_model=List[Photo])
-def get_all_photos(db=Depends(get_db)):
-    return db.query(PhotoDB).all()
+def get_all_photos(skip: int = 0, limit: int = 10, db=Depends(get_db)):
+    return db.query(PhotoDB).offset(skip).limit(limit).all()
 
 @app.get("/photos/{photo_id}", response_model=Photo)
 def get_photo_by_id(photo_id: str, db=Depends(get_db)):
@@ -339,7 +340,7 @@ def delete_photo(photo_id: str, username: str = Depends(get_current_username), d
     return JSONResponse(content={"message": "Photo deleted successfully"})
 
 @app.post("/orders", status_code=201)
-async def create_order(order: OrderSchema, db=Depends(get_db)):
+async def create_order(order: OrderSchema, background_tasks: BackgroundTasks, db=Depends(get_db)):
     order_id = str(uuid.uuid4())
 
     nova_poshta_data = order.novaPoshta.dict() if order.novaPoshta else None
@@ -392,7 +393,7 @@ async def create_order(order: OrderSchema, db=Depends(get_db)):
         "messenger": new_order.messenger,
         "items": detailed_items
     }
-    send_order_email(order_details)
+    background_tasks.add_task(send_order_email, order_details)
 
     return {"message": "Order created successfully", "order_id": order_id}
 
