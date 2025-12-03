@@ -157,8 +157,8 @@ def send_order_email(order_details: dict):
 
     # --- Send Email ---
     try:
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls()
+        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
+            #server.starttls()
             server.login(SMTP_USERNAME, SMTP_PASSWORD)
             server.sendmail(sender_email, RECIPIENT_EMAIL, msg.as_string())
         print("Order email sent successfully.")
