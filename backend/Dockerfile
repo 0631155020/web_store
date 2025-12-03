@@ -1,6 +1,11 @@
 # --- Базовый образ ---
 FROM python:3.9-slim
 
+# --- НОВЫЙ ШАГ ---
+# Устанавливаем необходимые сетевые утилиты (ping)
+RUN apt update && apt install -y iputils-ping telnet && rm -rf /var/lib/apt/lists/*
+# ------------------
+
 # --- Установка рабочей директории ---
 WORKDIR /app
 
