@@ -4,14 +4,11 @@ import uuid
 from pathlib import Path
 from typing import List, Optional
 import os
-import smtplib
 import time
 import json
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 import httpx
-from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile, status
+from fastapi import BackgroundTasks, Depends, FastAPI, File, Form, HTTPException, UploadFile, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -94,76 +91,64 @@ class OrderSchema(BaseModel):
 # --- FastAPI App Initialization ---
 app = FastAPI()
 
-# --- Email Sending ---
-def send_order_email(order_details: dict):
-    # --- Email Configuration ---
-    SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.example.com")
-    SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
-    SMTP_USERNAME = os.getenv("SMTP_USERNAME", "user@example.com")
-    SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "password")
-    RECIPIENT_EMAIL = "udodpilot@gmail.com"
+# --- Telegram Bot ---
+async def send_telegram_notification(order_details: dict):
+    TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+    TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-    # --- Email Content ---
-    sender_email = SMTP_USERNAME
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"New Order Received: {order_details['id']}"
-    msg["From"] = sender_email
-    msg["To"] = RECIPIENT_EMAIL
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+        print("Telegram bot token or chat ID is not set. Skipping notification.")
+        return
 
-    # --- HTML Body ---
-    nova_poshta_details_html = ""
+    # --- Message Formatting ---
+    nova_poshta_details = ""
     if order_details.get("novaPoshta"):
         nova_poshta_info = order_details["novaPoshta"]
         if nova_poshta_info:
-            nova_poshta_details_html = f"""
-            <h4>Nova Poshta Details:</h4>
-            <p><strong>City:</strong> {nova_poshta_info.get('city', 'N/A')}</p>
-            <p><strong>Warehouse:</strong> {nova_poshta_info.get('warehouse', 'N/A')}</p>
-            """
+            nova_poshta_details = (
+                f"<b>Nova Poshta Details:</b>\n"
+                f"City: {nova_poshta_info.get('city', 'N/A')}\n"
+                f"Warehouse: {nova_poshta_info.get('warehouse', 'N/A')}\n\n"
+            )
 
-    address_html = ""
-    if order_details.get("address"):
-        address_html = f"<p><strong>Address:</strong> {order_details['address']}</p>"
-
-    items_html = ""
+    items_details = "<b>Ordered Items:</b>\n"
     if order_details.get("items"):
-        items_html += "<h4>Ordered Items:</h4><ul>"
         for item in order_details["items"]:
             description = item.get('description', 'N/A')
             quantity = item.get('quantity', 'N/A')
             size = item.get('size', '')
-            size_html = f" (Size: {size})" if size else ""
-            items_html += f"<li>{description}{size_html} (Quantity: {quantity})</li>"
-        items_html += "</ul>"
+            size_str = f" (Size: {size})" if size else ""
+            items_details += f"- {description}{size_str} (Quantity: {quantity})\n"
 
-    html = f"""
-    <html>
-    <body>
-        <h2>New Order Details</h2>
-        <p><strong>Order ID:</strong> {order_details['id']}</p>
-        <p><strong>Email:</strong> {order_details['email']}</p>
-        <p><strong>Name:</strong> {order_details['firstName']} {order_details['lastName']}</p>
-        {address_html}
-        <p><strong>Phone:</strong> {order_details['phone']}</p>
-        <p><strong>Messenger:</strong> {order_details.get('messenger', 'N/A')}</p>
-        <p><strong>Delivery Method:</strong> {order_details['deliveryMethod']}</p>
-        <p><strong>Payment Method:</strong> {order_details['paymentMethod']}</p>
-        {nova_poshta_details_html}
-        {items_html}
-    </body>
-    </html>
-    """
-    msg.attach(MIMEText(html, "html"))
+    message = (
+        f"<b>New Order Received!</b>\n"
+        f"<b>Order ID:</b> {order_details['id']}\n"
+        f"<b>Email:</b> {order_details['email']}\n"
+        f"<b>Name:</b> {order_details['firstName']} {order_details['lastName']}\n"
+        f"<b>Phone:</b> {order_details['phone']}\n"
+        f"<b>Messenger:</b> {order_details.get('messenger', 'N/A')}\n"
+        f"<b>Delivery Method:</b> {order_details['deliveryMethod']}\n"
+        f"<b>Payment Method:</b> {order_details['paymentMethod']}\n\n"
+        f"{nova_poshta_details}"
+        f"{items_details}"
+    )
 
-    # --- Send Email ---
-    try:
-        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
-            #server.starttls()
-            server.login(SMTP_USERNAME, SMTP_PASSWORD)
-            server.sendmail(sender_email, RECIPIENT_EMAIL, msg.as_string())
-        print("Order email sent successfully.")
-    except Exception as e:
-        print(f"Failed to send order email: {e}")
+    # --- Send Message ---
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    params = {
+        "chat_id": TELEGRAM_CHAT_ID,
+        "text": message,
+        "parse_mode": "HTML"
+    }
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(url, json=params)
+            response.raise_for_status()
+            print("Telegram notification sent successfully.")
+        except httpx.HTTPStatusError as e:
+            print(f"Failed to send Telegram notification: {e.response.text}")
+        except Exception as e:
+            print(f"An error occurred while sending Telegram notification: {e}")
 
 # --- Nova Poshta API ---
 NOVA_POSHTA_API_KEY = os.getenv("NOVA_POSHTA_API_KEY")
@@ -339,7 +324,7 @@ def delete_photo(photo_id: str, username: str = Depends(get_current_username), d
     return JSONResponse(content={"message": "Photo deleted successfully"})
 
 @app.post("/orders", status_code=201)
-async def create_order(order: OrderSchema, db=Depends(get_db)):
+async def create_order(order: OrderSchema, background_tasks: BackgroundTasks, db=Depends(get_db)):
     order_id = str(uuid.uuid4())
 
     nova_poshta_data = order.novaPoshta.dict() if order.novaPoshta else None
@@ -392,7 +377,7 @@ async def create_order(order: OrderSchema, db=Depends(get_db)):
         "messenger": new_order.messenger,
         "items": detailed_items
     }
-    send_order_email(order_details)
+    background_tasks.add_task(send_telegram_notification, order_details)
 
     return {"message": "Order created successfully", "order_id": order_id}
 
