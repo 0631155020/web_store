@@ -1,0 +1,14 @@
+# Environments
+backend/.env
+
+# Logs
+uvicorn.log
+*.log
+*.txt
+
+# Python
+__pycache__/
+*.pyc
+
+# Uploads
+uploads/
