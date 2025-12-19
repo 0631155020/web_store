@@ -128,13 +128,14 @@ export const initializeCart = (config) => {
     loadCart();
 
     // Modal Management
-    const cartIcon = config.cartIcon;
+    const cartIcons = document.querySelectorAll('.cart-icon');
     const closeButton = config.closeButton;
     const checkoutButton = config.checkoutButton;
 
-    if (cartIcon) {
-        cartIcon.addEventListener('click', () => cartModal.style.display = 'block');
-    }
+    cartIcons.forEach(icon => {
+        icon.addEventListener('click', () => cartModal.style.display = 'block');
+    });
+
     if (closeButton) {
         closeButton.addEventListener('click', () => cartModal.style.display = 'none');
     }

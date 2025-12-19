@@ -413,6 +413,10 @@ async def read_admin_alias(username: str = Depends(get_current_username)):
 async def read_checkout():
     return FileResponse(FRONTEND_DIR / "checkout.html")
 
+@app.get("/checkout.html", response_class=HTMLResponse)
+async def read_checkout_alias():
+    return FileResponse(FRONTEND_DIR / "checkout.html")
+
 @app.get("/product-detail", response_class=HTMLResponse)
 async def read_product_detail():
     return FileResponse(FRONTEND_DIR / "product-detail.html")

@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initialize Cart ---
     initializeCart({
-        cartIcon: document.getElementById('cartIcon'),
         cartCount: document.getElementById('cartCount'),
         cartModal: document.getElementById('cartModal'),
         closeButton: document.querySelector('.close-button'),
