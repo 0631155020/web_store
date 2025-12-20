@@ -1,13 +1,33 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const navbarLinks = document.querySelectorAll('#navbar li a');
-    const currentPage = window.location.pathname.split('/').pop();
+const bar = document.getElementById('bar');
+const close = document.getElementById('close');
+const nav = document.getElementById('navbar');
 
-    navbarLinks.forEach(link => {
-        const linkPage = link.getAttribute('href').split('/').pop();
-        if (linkPage === currentPage) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
+if (bar) {
+    bar.addEventListener('click', () => {
+        nav.classList.add('active');
+    })
+}
+
+if (close) {
+    close.addEventListener('click', () => {
+        nav.classList.remove('active');
+    })
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const path = window.location.pathname;
+    const links = document.querySelectorAll("#navbar li a");
+
+    links.forEach(link => {
+        const linkPath = new URL(link.href).pathname;
+
+        // Remove the active class from all links first to be safe
+        link.classList.remove("active");
+
+        // Check for a match.
+        // The home page can be at '/' or '/main.html', so we treat them as the same.
+        if (path === linkPath || (path === '/' && linkPath === '/main.html')) {
+            link.classList.add("active");
         }
     });
 });

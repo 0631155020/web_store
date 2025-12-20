@@ -171,3 +171,28 @@ input[type="radio"]:checked + label {
     border-color: #000;
     background-color: #f0f0f0;
 }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        padding: 15px;
+        gap: 20px;
+    }
+
+    .checkout-form {
+        padding-right: 0;
+        order: 2; /* Move form below summary */
+    }
+
+    .order-summary {
+        padding-left: 0;
+        border-left: none;
+        order: 1; /* Move summary above form */
+    }
+
+    .name-fields {
+        flex-direction: column;
+        gap: 0;
+    }
+}

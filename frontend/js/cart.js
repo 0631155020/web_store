@@ -60,6 +60,12 @@ const updateCartView = () => {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCount.textContent = totalItems;
 
+    // Also update the mobile cart count if it exists
+    const cartCountMobile = document.getElementById('cartCountMobile');
+    if (cartCountMobile) {
+        cartCountMobile.textContent = totalItems;
+    }
+
     cartItems.innerHTML = '';
     let total = 0;
     cart.forEach(item => {
@@ -122,13 +128,14 @@ export const initializeCart = (config) => {
     loadCart();
 
     // Modal Management
-    const cartIcon = config.cartIcon;
+    const cartIcons = document.querySelectorAll('.cart-icon');
     const closeButton = config.closeButton;
     const checkoutButton = config.checkoutButton;
 
-    if (cartIcon) {
-        cartIcon.addEventListener('click', () => cartModal.style.display = 'block');
-    }
+    cartIcons.forEach(icon => {
+        icon.addEventListener('click', () => cartModal.style.display = 'block');
+    });
+
     if (closeButton) {
         closeButton.addEventListener('click', () => cartModal.style.display = 'none');
     }
