@@ -23,7 +23,10 @@
         <section class="upload-form">
             <h2 data-i18n-key="uploadNewPhoto">Загрузить новое фото</h2>
             <form id="uploadForm">
+                <label for="fileInput" data-i18n-key="mainPhoto">Основное фото:</label>
                 <input type="file" id="fileInput" name="file" accept="image/*" required>
+                <label for="sizeTablePhotoInput" data-i18n-key="sizeTablePhoto">Фото таблицы размеров (необязательно):</label>
+                <input type="file" id="sizeTablePhotoInput" name="size_table_photo" accept="image/*">
                 <input type="text" id="descriptionInput" name="description" placeholder="Описание (необязательно)" data-i18n-key="descriptionOptional">
                 <input type="number" id="priceInput" name="price" placeholder="Цена" required min="0" step="0.01" data-i18n-key="price">
                 <input type="text" id="sizesInput" name="sizes" placeholder="Размеры (через запятую)" data-i18n-key="sizes">

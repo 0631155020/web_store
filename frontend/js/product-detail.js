@@ -110,6 +110,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         infoContainer.appendChild(productName);
         infoContainer.appendChild(productPrice);
+
+        // Display size table photo if it exists
+        if (product.size_table_photo_path) {
+            const sizeTableImg = document.createElement('img');
+            sizeTableImg.src = product.size_table_photo_path;
+            sizeTableImg.alt = 'Size Table';
+            sizeTableImg.className = 'size-table-photo'; // For styling
+            infoContainer.appendChild(sizeTableImg);
+        }
+
         infoContainer.appendChild(sizeSelectorContainer);
         infoContainer.appendChild(addToCartBtn);
 
