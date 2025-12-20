@@ -235,30 +235,30 @@ def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
     return credentials.username
 
 # --- Database Initialization with Retry ---
-def init_db():
-    retries = 5
-    delay = 5  # seconds
-    for i in range(retries):
-        try:
-            # Check connection and create table
-            with engine.connect() as connection:
-                connection.execute(text("SELECT 1"))
-            Base.metadata.create_all(bind=engine)
-            print("Database connection successful and table created.")
-            return
-        except OperationalError as e:
-            print(f"Database connection failed: {e}. Retrying in {delay} seconds...")
-            time.sleep(delay)
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}. Retrying in {delay} seconds...")
-            time.sleep(delay)
-    print("Could not connect to the database after several retries. Exiting.")
-    raise Exception("Could not connect to the database.")
+# def init_db():
+#     retries = 5
+#     delay = 5  # seconds
+#     for i in range(retries):
+#         try:
+#             # Check connection and create table
+#             with engine.connect() as connection:
+#                 connection.execute(text("SELECT 1"))
+#             Base.metadata.create_all(bind=engine)
+#             print("Database connection successful and table created.")
+#             return
+#         except OperationalError as e:
+#             print(f"Database connection failed: {e}. Retrying in {delay} seconds...")
+#             time.sleep(delay)
+#         except Exception as e:
+#             print(f"An unexpected error occurred: {e}. Retrying in {delay} seconds...")
+#             time.sleep(delay)
+#     print("Could not connect to the database after several retries. Exiting.")
+#     raise Exception("Could not connect to the database.")
 
 
-@app.on_event("startup")
-def on_startup():
-    init_db()
+# @app.on_event("startup")
+# def on_startup():
+#     init_db()
 
 # --- Dependency for DB Session ---
 def get_db():
