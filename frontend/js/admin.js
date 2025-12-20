@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const galleryContainer = document.getElementById('galleryContainer');
     const uploadForm = document.getElementById('uploadForm');
     const fileInput = document.getElementById('fileInput');
+    const sizeTablePhotoInput = document.getElementById('sizeTablePhotoInput');
     const descriptionInput = document.getElementById('descriptionInput');
     const priceInput = document.getElementById('priceInput');
     const sizesInput = document.getElementById('sizesInput');
@@ -71,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     uploadForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const file = fileInput.files[0];
+        const sizeTablePhoto = sizeTablePhotoInput.files[0];
         const description = descriptionInput.value;
         const price = priceInput.value;
         const sizes = sizesInput.value.split(',').map(s => s.trim()).filter(Boolean);
@@ -82,6 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData();
         formData.append('file', file);
+        if (sizeTablePhoto) {
+            formData.append('size_table_photo', sizeTablePhoto);
+        }
         formData.append('description', description);
         formData.append('price', price);
         formData.append('sizes', JSON.stringify(sizes));

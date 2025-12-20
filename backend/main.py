@@ -34,6 +34,7 @@ class PhotoDB(Base):
     path = Column(String)
     price = Column(Float, default=0.0)
     sizes = Column(JSON, nullable=True)
+    size_table_photo_path = Column(String, nullable=True)
 
 class Order(Base):
     __tablename__ = "orders"
@@ -64,6 +65,7 @@ class Photo(BaseModel):
     path: str
     price: Optional[float] = 0.0
     sizes: Optional[List[str]] = None
+    size_table_photo_path: Optional[str] = None
 
     class Config:
         orm_mode = True
@@ -273,15 +275,26 @@ async def upload_photo(
     price: float = Form(0.0),
     sizes: Optional[str] = Form('[]'),
     file: UploadFile = File(...),
+    size_table_photo: Optional[UploadFile] = File(None),
     username: str = Depends(get_current_username),
     db=Depends(get_db)
 ):
+    # --- Process main product photo ---
     file_extension = Path(file.filename).suffix
     unique_filename = f"{uuid.uuid4()}{file_extension}"
     file_path = UPLOADS_DIR / unique_filename
-
     with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
+
+    # --- Process size table photo (if provided) ---
+    size_table_photo_path_val = None
+    if size_table_photo and size_table_photo.filename:
+        st_file_extension = Path(size_table_photo.filename).suffix
+        st_unique_filename = f"{uuid.uuid4()}{st_file_extension}"
+        st_file_path = UPLOADS_DIR / st_unique_filename
+        with open(st_file_path, "wb") as buffer:
+            buffer.write(await size_table_photo.read())
+        size_table_photo_path_val = f"/uploads/{st_unique_filename}"
 
     sizes_list = json.loads(sizes) if sizes else []
 
@@ -291,7 +304,8 @@ async def upload_photo(
         description=description,
         path=f"/uploads/{unique_filename}",
         price=price,
-        sizes=sizes_list
+        sizes=sizes_list,
+        size_table_photo_path=size_table_photo_path_val
     )
     db.add(new_photo)
     db.commit()
