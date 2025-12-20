@@ -4,3 +4,5 @@ python-multipart
 psycopg2-binary
 SQLAlchemy
 httpx
+alembic
+python-dotenv
