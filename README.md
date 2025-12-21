@@ -127,3 +127,18 @@ sudo usermod -aG docker $USER && newgrp docker
 touch .env to add file
 ls -a to check hiden files 
 nano .env to edit file
+
+create new migration
+```bash
+docker compose exec backend alembic revision --autogenerate -m "initial_migration"
+```
+
+apply migration
+```bash
+docker compose exec backend alembic upgrade head
+```
+
+edit conf file of nginx
+```bash
+sudo nano /etc/nginx/sites-available/default
+```
