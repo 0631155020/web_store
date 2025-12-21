@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const productPrice = document.createElement('p');
         productPrice.className = 'price';
-        productPrice.textContent = `$${product.price.toFixed(2)}`;
+        productPrice.textContent = `${product.price.toFixed(2)} UAH`;
 
         // Size selector
         const sizeSelectorContainer = document.createElement('div');
