@@ -112,3 +112,15 @@ SMTP_USERNAME=your_email
 SMTP_PASSWORD=your_password
 NOVA_POSHTA_API_KEY=your_api_key
 ```
+
+
+to instal docker in vm
+
+```bash
+sudo apt update && sudo apt install -y docker.io docker-compose-v2
+```
+
+to get rid off sudo
+```bash
+sudo usermod -aG docker $USER && newgrp docker
+```
