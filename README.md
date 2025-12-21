@@ -124,3 +124,6 @@ to get rid off sudo
 ```bash
 sudo usermod -aG docker $USER && newgrp docker
 ```
+touch .env to add file
+ls -a to check hiden files 
+nano .env to edit file
