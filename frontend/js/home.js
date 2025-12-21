@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <img src="${photo.path}" alt="${photo.description || photo.filename}">
                 <div class="info">
                     <p>${photo.description || 'No description'}</p>
-                    <p class="price">$${photo.price.toFixed(2)}</p>
+                    <p class="price">${photo.price.toFixed(2)} UAH</p>
                 </div>
             `;
             galleryItem.appendChild(link);

@@ -80,7 +80,7 @@ const updateCartView = () => {
                 <span class="quantity">x${item.quantity}</span>
                 <button class="increase-quantity-btn" data-id="${item.photo.id}" data-size="${item.size}">+</button>
             </span>
-            <span>$${itemTotal.toFixed(2)}</span>
+            <span>${itemTotal.toFixed(2)} UAH</span>
             <button class="remove-all-btn" data-id="${item.photo.id}" data-size="${item.size}">Remove All</button>
         `;
         cartItems.appendChild(cartItem);
