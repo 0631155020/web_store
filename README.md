@@ -112,3 +112,33 @@ SMTP_USERNAME=your_email
 SMTP_PASSWORD=your_password
 NOVA_POSHTA_API_KEY=your_api_key
 ```
+
+
+to instal docker in vm
+
+```bash
+sudo apt update && sudo apt install -y docker.io docker-compose-v2
+```
+
+to get rid off sudo
+```bash
+sudo usermod -aG docker $USER && newgrp docker
+```
+touch .env to add file
+ls -a to check hiden files 
+nano .env to edit file
+
+create new migration
+```bash
+docker compose exec backend alembic revision --autogenerate -m "initial_migration"
+```
+
+apply migration
+```bash
+docker compose exec backend alembic upgrade head
+```
+
+edit conf file of nginx
+```bash
+sudo nano /etc/nginx/sites-available/default
+```
