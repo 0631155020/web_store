@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="item-details">
                     <p>${item.photo.description || 'Без описания'}${item.size ? ` (${item.size})` : ''}</p>
                     <p>Qty: ${item.quantity}</p>
-                    <p>$${itemTotal.toFixed(2)}</p>
+                    <p>${itemTotal.toFixed(2)} UAH</p>
                 </div>
             `;
             cartItemsSummaryEl.appendChild(cartItem);
@@ -57,8 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const tax = 0;
         const total = subtotal + shipping + tax;
 
-        subtotalPriceEl.textContent = `$${subtotal.toFixed(2)}`;
-        totalPriceEl.textContent = `$${total.toFixed(2)}`;
+        subtotalPriceEl.textContent = `${subtotal.toFixed(2)} UAH`;
+        totalPriceEl.textContent = `${total.toFixed(2)} UAH`;
     };
 
     const handleOrderSubmit = async (event) => {
