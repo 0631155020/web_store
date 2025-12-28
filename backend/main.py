@@ -30,7 +30,8 @@ class PhotoDB(Base):
     __tablename__ = "photos"
     id = Column(String, primary_key=True, index=True)
     filename = Column(String)
-    description = Column(String, nullable=True)
+    name = Column(String, nullable=True)
+    item_description = Column(String, nullable=True)
     path = Column(String)
     price = Column(Float, default=0.0)
     sizes = Column(JSON, nullable=True)
@@ -243,8 +244,7 @@ def init_db():
             # Check connection and create table
             with engine.connect() as connection:
                 connection.execute(text("SELECT 1"))
-            Base.metadata.create_all(bind=engine)
-            print("Database connection successful and table created.")
+            print("Database connection successful.")
             return
         except OperationalError as e:
             print(f"Database connection failed: {e}. Retrying in {delay} seconds...")

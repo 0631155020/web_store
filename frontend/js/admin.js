@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadForm = document.getElementById('uploadForm');
     const fileInput = document.getElementById('fileInput');
     const sizeTablePhotoInput = document.getElementById('sizeTablePhotoInput');
-    const descriptionInput = document.getElementById('descriptionInput');
+    const nameInput = document.getElementById('nameInput');
+    const itemDescriptionInput = document.getElementById('itemDescriptionInput');
     const priceInput = document.getElementById('priceInput');
     const sizesInput = document.getElementById('sizesInput');
 
@@ -16,13 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             galleryContainer.innerHTML = '';
             photos.forEach(photo => {
-                const galleryItem = document.createElement('div');
+                const galleryItem = document.createElement('a');
                 galleryItem.className = 'gallery-item';
+                galleryItem.href = `/product-detail.html?id=${photo.id}`;
 
                 galleryItem.innerHTML = `
-                    <img src="${photo.path}" alt="${photo.description || photo.filename}">
+                    <img src="${photo.path}" alt="${photo.name || photo.filename}">
                     <div class="info">
-                        <p>${photo.description || 'Без описания'}</p>
+                        <p>${photo.name || 'Без названия'}</p>
                         <p class="price">$${photo.price.toFixed(2)}</p>
                         <button class="delete-btn" data-id="${photo.id}">Удалить</button>
                     </div>
@@ -33,7 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Добавляем обработчики для кнопок удаления
             document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', () => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
                     const photoId = button.dataset.id;
                     deletePhoto(photoId);
                 });
@@ -73,7 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const file = fileInput.files[0];
         const sizeTablePhoto = sizeTablePhotoInput.files[0];
-        const description = descriptionInput.value;
+        const name = nameInput.value;
+        const item_description = itemDescriptionInput.value;
         const price = priceInput.value;
         const sizes = sizesInput.value.split(',').map(s => s.trim()).filter(Boolean);
 
@@ -87,7 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sizeTablePhoto) {
             formData.append('size_table_photo', sizeTablePhoto);
         }
-        formData.append('description', description);
+        formData.append('name', name);
+        formData.append('item_description', item_description);
         formData.append('price', price);
         formData.append('sizes', JSON.stringify(sizes));
 

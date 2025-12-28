@@ -53,10 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const mainImage = document.createElement('img');
         mainImage.className = 'main-product-image';
-        mainImage.src = product.path; // Use the single path from the existing API response
-        mainImage.alt = product.description;
+        mainImage.src = product.path;
+        mainImage.alt = product.name;
 
-        // The current backend model only supports one image, so no thumbnails are created.
         galleryContainer.appendChild(mainImage);
 
         // Right side: Product Info
@@ -64,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         infoContainer.className = 'product-info';
 
         const productName = document.createElement('h1');
-        productName.textContent = product.description || 'Product'; // 'name' field doesn't exist in the model
+        productName.textContent = product.name || 'Product';
 
         const productPrice = document.createElement('p');
         productPrice.className = 'price';
@@ -98,6 +97,11 @@ document.addEventListener('DOMContentLoaded', () => {
             sizeSelectorContainer.appendChild(sizeSelector);
         }
 
+        // Item Description
+        const itemDescription = document.createElement('p');
+        itemDescription.className = 'item-description';
+        itemDescription.textContent = product.item_description || '';
+
         // Add to cart button
         const addToCartBtn = document.createElement('button');
         addToCartBtn.className = 'add-to-cart-btn';
@@ -121,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         infoContainer.appendChild(sizeSelectorContainer);
+        infoContainer.appendChild(itemDescription);
         infoContainer.appendChild(addToCartBtn);
 
         productDetailContainer.appendChild(galleryContainer);
