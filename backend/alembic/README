@@ -1,1 +1,12 @@
 Generic single-database configuration.
+
+to generate new migrations
+
+```bash
+docker compose exec backend alembic revision --autogenerate -m "initial_migration"
+```
+
+to apply this migration
+```bash
+docker compose exec backend alembic upgrade head
+```
