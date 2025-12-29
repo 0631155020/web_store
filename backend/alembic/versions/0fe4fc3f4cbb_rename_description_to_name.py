@@ -1,9 +1,9 @@
 
 """Rename description to name
 
-Revision ID: 5_rename_description_to_name
-Revises: 4_initial_migration
-Create Date: 2025-12-28 14:18:00.000000
+Revision ID: 0fe4fc3f4cbb
+Revises: 426efb5376e7
+Create Date: 2025-12-29 13:26:57.436623
 
 """
 from typing import Sequence, Union
@@ -13,8 +13,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '5_rename_description_to_name'
-down_revision: Union[str, Sequence[str], None] = '4_initial_migration'
+revision: str = '0fe4fc3f4cbb'
+down_revision: Union[str, Sequence[str], None] = '426efb5376e7'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
