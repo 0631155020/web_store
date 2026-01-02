@@ -242,7 +242,7 @@ def init_db():
     delay = 5  # seconds
     for i in range(retries):
         try:
-            # Check connection and create table
+            # Check connection
             with engine.connect() as connection:
                 connection.execute(text("SELECT 1"))
             print("Database connection successful.")
