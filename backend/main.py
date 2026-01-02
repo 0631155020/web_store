@@ -30,7 +30,8 @@ class PhotoDB(Base):
     __tablename__ = "photos"
     id = Column(String, primary_key=True, index=True)
     filename = Column(String)
-    description = Column(String, nullable=True)
+    name = Column(String, nullable=True)
+    item_description = Column(String, nullable=True)
     path = Column(String)
     price = Column(Float, default=0.0)
     sizes = Column(JSON, nullable=True)
@@ -61,7 +62,8 @@ class OrderItem(Base):
 class Photo(BaseModel):
     id: str
     filename: str
-    description: Optional[str] = None
+    name: Optional[str] = None
+    item_description: Optional[str] = None
     path: str
     price: Optional[float] = 0.0
     sizes: Optional[List[str]] = None
@@ -116,11 +118,11 @@ async def send_telegram_notification(order_details: dict):
     items_details = "<b>Ordered Items:</b>\n"
     if order_details.get("items"):
         for item in order_details["items"]:
-            description = item.get('description', 'N/A')
+            name = item.get('name', 'N/A')
             quantity = item.get('quantity', 'N/A')
             size = item.get('size', '')
             size_str = f" (Size: {size})" if size else ""
-            items_details += f"- {description}{size_str} (Quantity: {quantity})\n"
+            items_details += f"- {name}{size_str} (Quantity: {quantity})\n"
 
     message = (
         f"<b>New Order Received!</b>\n"
@@ -240,11 +242,10 @@ def init_db():
     delay = 5  # seconds
     for i in range(retries):
         try:
-            # Check connection and create table
+            # Check connection
             with engine.connect() as connection:
                 connection.execute(text("SELECT 1"))
-            Base.metadata.create_all(bind=engine)
-            print("Database connection successful and table created.")
+            print("Database connection successful.")
             return
         except OperationalError as e:
             print(f"Database connection failed: {e}. Retrying in {delay} seconds...")
@@ -271,7 +272,8 @@ def get_db():
 # --- API Endpoints ---
 @app.post("/photos", response_model=Photo)
 async def upload_photo(
-    description: Optional[str] = Form(None),
+    name: Optional[str] = Form(None),
+    item_description: Optional[str] = Form(None),
     price: float = Form(0.0),
     sizes: Optional[str] = Form('[]'),
     file: UploadFile = File(...),
@@ -301,7 +303,8 @@ async def upload_photo(
     new_photo = PhotoDB(
         id=str(uuid.uuid4()),
         filename=file.filename,
-        description=description,
+        name=name,
+        item_description=item_description,
         path=f"/uploads/{unique_filename}",
         price=price,
         sizes=sizes_list,
@@ -373,7 +376,7 @@ async def create_order(order: OrderSchema, background_tasks: BackgroundTasks, db
         photo = db.query(PhotoDB).filter(PhotoDB.id == item.photo_id).first()
         if photo:
             detailed_items.append({
-                "description": photo.description,
+                "name": photo.name,
                 "quantity": item.quantity,
                 "size": item.size
             })

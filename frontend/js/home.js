@@ -30,9 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = document.createElement('a');
             link.href = `/product-detail.html?id=${photo.id}`;
             link.innerHTML = `
-                <img src="${photo.path}" alt="${photo.description || photo.filename}">
+                <img src="${photo.path}" alt="${photo.name || photo.filename}">
                 <div class="info">
-                    <p>${photo.description || 'No description'}</p>
+                    <p>${photo.name || 'No description'}</p>
                     <p class="price">${photo.price.toFixed(2)} UAH</p>
                 </div>
             `;
