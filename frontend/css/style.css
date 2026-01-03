@@ -339,7 +339,7 @@ main {
 }
 
 #hero {
-    background-image: url("/static/photos/back.JPG");
+    background-image: url("/static/photos/back.PNG");
     height: 90vh;
     background-position: right 0 top 25%;
     background-size: cover;
