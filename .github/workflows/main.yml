@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ feat/add-cicd-pipeline-13487737187264320702 ]
 
 jobs:
   build:
