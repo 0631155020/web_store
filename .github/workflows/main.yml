@@ -1,0 +1,99 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push backend image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        dockerfile: backend/Dockerfile
+        push: true
+        tags: |
+          ghcr.io/${{ github.repository }}/backend:latest
+          ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create docker-compose.override.yml
+      run: |
+        echo '
+        services:
+          backend:
+            image: ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+        ' > docker-compose.override.yml
+
+    - name: Create .env file
+      run: |
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > backend/.env
+
+    - name: Pull the specific image for testing
+      run: docker-compose pull backend
+
+    - name: Run services
+      run: docker-compose up -d
+
+    - name: Wait for backend to be healthy
+      run: |
+        echo "Waiting for backend to be healthy..."
+        timeout 60s bash -c 'until curl -fsS http://localhost:8000/photos > /dev/null; do sleep 1; done'
+
+    - name: Run a simple API test
+      run: curl -f http://localhost:8000/photos
+
+    - name: Stop services
+      run: docker-compose down
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /path/to/your/project
+          echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker pull ghcr.io/${{ github.repository }}/backend:latest
+          echo '
+          services:
+            backend:
+              image: ghcr.io/${{ github.repository }}/backend:latest
+          ' > docker-compose.override.yml
+          docker-compose up -d --no-deps backend
