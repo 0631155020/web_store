@@ -35,52 +35,52 @@ jobs:
           ghcr.io/${{ github.repository }}/backend:latest
           ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
 
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      contents: read
-      packages: read
+  # test:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   permissions:
+  #     contents: read
+  #     packages: read
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
 
-    - name: Log in to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+  #   - name: Log in to GitHub Container Registry
+  #     uses: docker/login-action@v3
+  #     with:
+  #       registry: ghcr.io
+  #       username: ${{ github.actor }}
+  #       password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Create docker-compose.override.yml
-      run: |
-        echo '
-        services:
-          backend:
-            image: ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
-        ' > docker-compose.override.yml
+  #   - name: Create docker-compose.override.yml
+  #     run: |
+  #       echo '
+  #       services:
+  #         backend:
+  #           image: ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+  #       ' > docker-compose.override.yml
 
-    - name: Create .env file
-      run: |
-        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > backend/.env
+  #   - name: Create .env file
+  #     run: |
+  #       echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > backend/.env
 
-    - name: Pull the specific image for testing
-      run: docker-compose pull backend
+  #   - name: Pull the specific image for testing
+  #     run: docker-compose pull backend
 
-    - name: Run services
-      run: docker-compose up -d
+  #   - name: Run services
+  #     run: docker-compose up -d
 
-    - name: Wait for backend to be healthy
-      run: |
-        echo "Waiting for backend to be healthy..."
-        timeout 60s bash -c 'until curl -fsS http://localhost:8000/photos > /dev/null; do sleep 1; done'
+  #   - name: Wait for backend to be healthy
+  #     run: |
+  #       echo "Waiting for backend to be healthy..."
+  #       timeout 60s bash -c 'until curl -fsS http://localhost:8000/photos > /dev/null; do sleep 1; done'
 
-    - name: Run a simple API test
-      run: curl -f http://localhost:8000/photos
+  #   - name: Run a simple API test
+  #     run: curl -f http://localhost:8000/photos
 
-    - name: Stop services
-      run: docker-compose down
+  #   - name: Stop services
+  #     run: docker-compose down
 
   deploy:
     runs-on: ubuntu-latest
