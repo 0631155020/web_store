@@ -12,3 +12,6 @@ __pycache__/
 
 # Uploads
 uploads/
+
+__pycache__/
+uvicorn.log
