@@ -4,7 +4,7 @@
     ```
      
      
-http://localhost:8000
+get API on http://localhost:8000
 
 
 **to instal docker in vm**
