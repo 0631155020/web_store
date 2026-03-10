@@ -7,7 +7,11 @@ from sqlalchemy.ext.declarative import declarative_base
 
 
 # --- Database Configuration ---
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@db/mydatabase")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL is None:
+    raise ValueError("DATABASE_URL is not set in environment variables")
+
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

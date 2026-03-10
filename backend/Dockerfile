@@ -7,10 +7,10 @@ RUN apt update && apt install -y iputils-ping telnet && rm -rf /var/lib/apt/list
 # ------------------
 
 # --- Установка рабочей директории ---
-WORKDIR /app
+WORKDIR /app/backend
 
 # --- Копирование файлов зависимостей ---
-COPY ./backend/requirements.txt /app/
+COPY ./backend/requirements.txt /app/backend/
 
 # --- Установка зависимостей ---
 RUN pip install --no-cache-dir -r requirements.txt
@@ -18,8 +18,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # --- Копирование кода бэкенда ---
 COPY ./backend/src /app/
 
-# --- Копирование кода фронтенда ---
-COPY ./frontend /app/frontend
+# # --- Копирование кода фронтенда ---
+# COPY ./frontend /app/frontend
 
 # --- Указание порта и команды для запуска ---
 EXPOSE 8000
