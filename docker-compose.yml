@@ -14,7 +14,7 @@ services:
       - ./:/app
 
     env_file:
-      - ./backend/.env
+      - .env
 
     environment:
       - PYTHONUNBUFFERED=1
@@ -27,25 +27,23 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-    # when connecting to the database in pgadmin use this info:
-      # - POSTGRES_DB=mydatabase
-      # - POSTGRES_USER=user 
-      # - POSTGRES_PASSWORD=password
         POSTGRES_DB: ${POSTGRES_DB}
         POSTGRES_USER: ${POSTGRES_USER}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
-  # pgadmin:
-  #   image: dpage/pgadmin4
-  #   environment:
-  #   # when logging in to pgadmin use this info:
-  #      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-  #      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-  #   ports:
-  #     - "8080:80"
-  #   depends_on: 
-  #     - db
+  pgadmin:
+    image: dpage/pgadmin4
+    env_file:
+      - .env
+    environment:
+    # when logging in to pgadmin use this info:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "8080:80"
+    depends_on: 
+      - db
 
 volumes:
   postgres_data:
