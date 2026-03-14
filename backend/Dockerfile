@@ -25,4 +25,4 @@ COPY ./backend/alembic /app/alembic/
 
 # --- Указание порта и команды для запуска ---
 EXPOSE 8000
-CMD ["sh", "-c", "alembic upgrade head && exec uvicorn src.main:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "python -c 'from src.database import init_db; init_db()' && alembic upgrade head && exec uvicorn src.main:app --host 0.0.0.0 --port 8000"]

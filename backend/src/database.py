@@ -19,7 +19,7 @@ Base = declarative_base()
 
 # --- Database Initialization with Retry ---
 def init_db():
-    retries = 5
+    retries = 15
     delay = 5  # seconds
     for i in range(retries):
         try:
