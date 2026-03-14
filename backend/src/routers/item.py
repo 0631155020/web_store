@@ -14,19 +14,22 @@ from src.path import BASE_DIR
 
 router = APIRouter()
 
+import json
+
 @router.post("/photos", response_model=Photo)
 async def upload_photo(
     name: Optional[str] = Form(None),
     item_description: Optional[str] = Form(None),
     price: float = Form(0.0),
-    item: UploadFile = File(...),
+    sizes: Optional[str] = Form(None),
+    file: UploadFile = File(...),
     size_table_photo: Optional[UploadFile] = File(None),
     username: str = Depends(get_current_username),
     db=Depends(get_db)
 ):
     
     # --- Process main product photo ---
-    unique_filename = await save_file(item)
+    unique_filename = await save_file(file)
     photo_path = f"/uploads/{unique_filename}"
 
     # --- Process size table photo (if provided) ---
@@ -35,13 +38,21 @@ async def upload_photo(
         st_filename = await save_file(size_table_photo)
         size_table_photo_path_val = f"/uploads/{st_filename}"
 
+    parsed_sizes = None
+    if sizes:
+        try:
+            parsed_sizes = json.loads(sizes)
+        except json.JSONDecodeError:
+            parsed_sizes = []
+
     new_photo = PhotoDB(
         id=str(uuid.uuid4()),
-        filename=item.filename,
+        filename=file.filename,
         name=name,
         item_description=item_description,
         path=photo_path,
         price=price,
+        sizes=parsed_sizes,
         size_table_photo_path=size_table_photo_path_val
     )
     db.add(new_photo)
