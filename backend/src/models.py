@@ -12,7 +12,6 @@ class PhotoDB(Base):
     item_description = Column(String, nullable=True)
     path = Column(String)
     price = Column(Float, default=0.0)
-    sizes = Column(JSON, nullable=True)
     size_table_photo_path = Column(String, nullable=True)
 
 class Order(Base):

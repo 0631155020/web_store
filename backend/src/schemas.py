@@ -9,7 +9,6 @@ class Photo(BaseModel):
     item_description: Optional[str] = None
     path: str
     price: Optional[float] = 0.0
-    sizes: Optional[List[str]] = None
     size_table_photo_path: Optional[str] = None
 
     class Config:
