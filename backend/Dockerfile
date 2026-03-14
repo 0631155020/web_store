@@ -16,12 +16,13 @@ COPY ./backend/requirements.txt /app/backend/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # --- Копирование кода бэкенда ---
-COPY ./backend/src /app/
+COPY ./backend/src /app/src/
+COPY ./backend/alembic.ini /app/
+COPY ./backend/alembic /app/alembic/
 
 # # --- Копирование кода фронтенда ---
 # COPY ./frontend /app/frontend
 
 # --- Указание порта и команды для запуска ---
 EXPOSE 8000
-#CMD ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"]
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "alembic upgrade head && exec uvicorn src.main:app --host 0.0.0.0 --port 8000"]
