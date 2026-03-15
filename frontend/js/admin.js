@@ -7,8 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.getElementById('nameInput');
     const itemDescriptionInput = document.getElementById('itemDescriptionInput');
     const priceInput = document.getElementById('priceInput');
-    const sizesInput = document.getElementById('sizesInput');
-
+    
     // --- Функция для отображения галереи ---
     const fetchAndDisplayPhotos = async () => {
         try {
@@ -79,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = nameInput.value;
         const item_description = itemDescriptionInput.value;
         const price = priceInput.value;
-        const sizes = sizesInput.value.split(',').map(s => s.trim()).filter(Boolean);
+        
 
         if (!file || !price) {
             alert('Пожалуйста, выберите файл и укажите цену.');
