@@ -93,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('name', name);
         formData.append('item_description', item_description);
         formData.append('price', price);
-        formData.append('sizes', JSON.stringify(sizes));
 
         try {
             const response = await fetch('/photos', {
