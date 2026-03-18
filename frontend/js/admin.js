@@ -86,15 +86,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('item', file);
         if (sizeTablePhoto) {
             formData.append('size_table_photo', sizeTablePhoto);
         }
         formData.append('name', name);
         formData.append('item_description', item_description);
         formData.append('price', price);
-        formData.append('sizes', JSON.stringify(sizes));
-
         try {
             const response = await fetch('/photos', {
                 method: 'POST',
