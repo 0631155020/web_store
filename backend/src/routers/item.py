@@ -1,3 +1,4 @@
+import json
 from typing import List, Optional
 import uuid
 from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile
@@ -19,6 +20,7 @@ async def upload_photo(
     name: Optional[str] = Form(None),
     item_description: Optional[str] = Form(None),
     price: float = Form(0.0),
+    sizes: Optional[str] = Form(None),
     item: UploadFile = File(...),
     size_table_photo: Optional[UploadFile] = File(None),
     username: str = Depends(get_current_username),
@@ -35,6 +37,8 @@ async def upload_photo(
         st_filename = await save_file(size_table_photo)
         size_table_photo_path_val = f"/uploads/{st_filename}"
 
+    sizes_list = json.loads(sizes) if sizes else []
+
     new_photo = PhotoDB(
         id=str(uuid.uuid4()),
         filename=item.filename,
@@ -42,6 +46,7 @@ async def upload_photo(
         item_description=item_description,
         path=photo_path,
         price=price,
+        sizes = sizes_list,
         size_table_photo_path=size_table_photo_path_val
     )
     db.add(new_photo)

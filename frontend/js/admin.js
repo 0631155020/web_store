@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="info">
                         <p>${photo.name || 'Без названия'}</p>
                         <p class="price">$${photo.price.toFixed(2)}</p>
+                        <p>${photo.sizes?.join(', ') || ''}</p>
                         <button class="delete-btn" data-id="${photo.id}">Удалить</button>
                     </div>
                 `;
@@ -78,6 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = nameInput.value;
         const item_description = itemDescriptionInput.value;
         const price = priceInput.value;
+
+        const sizeCheckboxes = document.querySelectorAll('input[name="sizes"]:checked');
+        const sizes = Array.from(sizeCheckboxes).map(checkbox => checkbox.value);
         
 
         if (!file || !price) {
@@ -93,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('name', name);
         formData.append('item_description', item_description);
         formData.append('price', price);
+        formData.append('sizes', JSON.stringify(sizes));
         try {
             const response = await fetch('/photos', {
                 method: 'POST',
