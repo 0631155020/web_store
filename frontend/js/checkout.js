@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(deliveryForm);
         const orderData = {
-            email: formData.get('email'),
+            //email: formData.get('email'),
             firstName: formData.get('firstName'),
             lastName: formData.get('lastName'),
             phone: formData.get('phone'),

@@ -18,7 +18,7 @@ class PhotoDB(Base):
 class Order(Base):
     __tablename__ = "orders"
     id = Column(String, primary_key=True, index=True)
-    email = Column(String, nullable = True)
+    # email = Column(String, nullable = True)
     firstName = Column(String)
     lastName = Column(String)
     address = Column(String, nullable=True)
