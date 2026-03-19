@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
             link.innerHTML = `
                 <img src="${photo.path}" alt="${photo.name || photo.filename}">
                 <div class="info">
-                    <p>${photo.name || 'No description'}</p>
-                    <p class="price">${photo.price.toFixed(2)} UAH</p>
+                    <p>${photo.name || window.t('noDescription')}</p>
+                    <p class="price">${photo.price.toFixed(2)} ${window.t('currency')}</p>
                 </div>
             `;
             galleryItem.appendChild(link);
@@ -69,6 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
             filterPhotos(event.target.value);
         });
     }
+
+    // --- Re-render on language change ---
+    window.addEventListener('languageLoaded', () => {
+        displayPhotos(photos);
+    });
 
     // --- Initialization ---
     fetchAndDisplayPhotos();

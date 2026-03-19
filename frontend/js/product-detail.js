@@ -24,14 +24,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const productId = urlParams.get('id');
 
         if (!productId) {
-            productDetailContainer.innerHTML = '<p>Product not found.</p>';
+            productDetailContainer.innerHTML = `<p>${window.t('productNotFound')}</p>`;
             return;
         }
 
         try {
             const response = await fetch(`/photos/${productId}`);
             if (!response.ok) {
-                throw new Error('Product not found');
+                throw new Error(window.t('productNotFound'));
             }
             const product = await response.json();
             currentProduct = product;
@@ -44,6 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const displayProductDetails = (product) => {
+        if (!product) return;
+
         // Main container
         productDetailContainer.innerHTML = ''; // Clear
 
@@ -54,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainImage = document.createElement('img');
         mainImage.className = 'main-product-image';
         mainImage.src = product.path;
-        mainImage.alt = product.name;
+        mainImage.alt = product.name || window.t('noDescription');
 
         galleryContainer.appendChild(mainImage);
 
@@ -63,18 +65,18 @@ document.addEventListener('DOMContentLoaded', () => {
         infoContainer.className = 'product-info';
 
         const productName = document.createElement('h1');
-        productName.textContent = product.name || 'Product';
+        productName.textContent = product.name || window.t('noDescription');
 
         const productPrice = document.createElement('p');
         productPrice.className = 'price';
-        productPrice.textContent = `${product.price.toFixed(2)} UAH`;
+        productPrice.textContent = `${product.price.toFixed(2)} ${window.t('currency')}`;
 
         // Size selector
         const sizeSelectorContainer = document.createElement('div');
         sizeSelectorContainer.className = 'size-selector-container';
         if (product.sizes && product.sizes.length > 0) {
             const sizeLabel = document.createElement('p');
-            sizeLabel.textContent = 'Select Size:';
+            sizeLabel.textContent = window.t('selectSize');
             sizeSelectorContainer.appendChild(sizeLabel);
 
             const sizeSelector = document.createElement('div');
@@ -105,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add to cart button
         const addToCartBtn = document.createElement('button');
         addToCartBtn.className = 'add-to-cart-btn';
-        addToCartBtn.textContent = 'Add to Cart';
+        addToCartBtn.textContent = window.t('addToCart');
         addToCartBtn.addEventListener('click', () => {
             const selectedSizeEl = document.querySelector(`input[name="size-${product.id}"]:checked`);
             const selectedSize = selectedSizeEl ? selectedSizeEl.value : null;
@@ -132,6 +134,18 @@ document.addEventListener('DOMContentLoaded', () => {
         productDetailContainer.appendChild(infoContainer);
     };
 
+    window.addEventListener('languageLoaded', () => {
+        if (currentProduct) {
+            displayProductDetails(currentProduct);
+        } else if (!new URLSearchParams(window.location.search).get('id')) {
+            productDetailContainer.innerHTML = `<p>${window.t('productNotFound')}</p>`;
+        }
+    });
+
     // --- Initialization ---
+    // Only fetch if language is already loaded, else wait for languageLoaded event.
+    // However, fetchProductDetails takes time, so we can start fetching,
+    // and display will use window.t which might be loaded or not.
+    // It's safe to just fetch.
     fetchProductDetails();
 });

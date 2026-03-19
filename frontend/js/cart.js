@@ -19,7 +19,7 @@ const loadCart = () => {
 // --- Cart Management Functions ---
 export const addToCart = (photo, size) => {
     if (photo.sizes && photo.sizes.length > 0 && !size) {
-        alert('Please select a size.');
+        alert(window.t('pleaseSelectSize'));
         return;
     }
 
@@ -54,7 +54,7 @@ const removeAllFromCart = (photoId, size) => {
     updateCartView();
 };
 
-const updateCartView = () => {
+export const updateCartView = () => {
     if (!cartCount || !cartItems || !cartTotal) return;
 
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -73,15 +73,15 @@ const updateCartView = () => {
         cartItem.className = 'cart-item';
         const itemTotal = parseFloat(item.photo.price) * item.quantity;
         cartItem.innerHTML = `
-            <img src="${item.photo.path}" alt="${item.photo.description}" class="cart-item-image">
+            <img src="${item.photo.path}" alt="${item.photo.description || window.t('noDescription')}" class="cart-item-image">
             <span>${item.photo.description || item.photo.filename}${item.size ? ` (${item.size})` : ''}</span>
             <span class="cart-item-controls">
                 <button class="decrease-quantity-btn" data-id="${item.photo.id}" data-size="${item.size}">-</button>
                 <span class="quantity">x${item.quantity}</span>
                 <button class="increase-quantity-btn" data-id="${item.photo.id}" data-size="${item.size}">+</button>
             </span>
-            <span>${itemTotal.toFixed(2)} UAH</span>
-            <button class="remove-all-btn" data-id="${item.photo.id}" data-size="${item.size}">Remove All</button>
+            <span>${itemTotal.toFixed(2)} ${window.t('currency')}</span>
+            <button class="remove-all-btn" data-id="${item.photo.id}" data-size="${item.size}">${window.t('removeAll')}</button>
         `;
         cartItems.appendChild(cartItem);
         total += itemTotal;
@@ -118,6 +118,11 @@ const updateCartView = () => {
     });
 };
 
+// Re-render the cart items if the language changes
+window.addEventListener('languageLoaded', () => {
+    updateCartView();
+});
+
 // --- Initialization Function ---
 export const initializeCart = (config) => {
     cartCount = config.cartCount;
@@ -150,7 +155,7 @@ export const initializeCart = (config) => {
             if (cart.length > 0) {
                 window.location.href = '/checkout';
             } else {
-                alert('Your cart is empty!');
+                alert(window.t('yourCartIsEmpty'));
             }
         });
     }

@@ -23,10 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 galleryItem.innerHTML = `
                     <img src="${photo.path}" alt="${photo.name || photo.filename}">
                     <div class="info">
-                        <p>${photo.name || 'Без названия'}</p>
+                        <p>${photo.name || window.t('noTitle')}</p>
                         <p class="price">$${photo.price.toFixed(2)}</p>
                         <p>${photo.sizes?.join(', ') || ''}</p>
-                        <button class="delete-btn" data-id="${photo.id}">Удалить</button>
+                        <button class="delete-btn" data-id="${photo.id}">${window.t('delete')}</button>
                     </div>
                 `;
 
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Функция для удаления фото ---
     const deletePhoto = async (photoId) => {
-        if (!confirm('Вы уверены, что хотите удалить это фото?')) {
+        if (!confirm(window.t('confirmDelete'))) {
             return;
         }
 
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fetchAndDisplayPhotos();
         } catch (error) {
             console.error('Ошибка:', error);
-            alert('Не удалось удалить фото.');
+            alert(window.t('failedToDelete'));
         }
     };
 
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
 
         if (!file || !price) {
-            alert('Пожалуйста, выберите файл и укажите цену.');
+            alert(window.t('pleaseSelectFileAndPrice'));
             return;
         }
 
@@ -109,8 +109,12 @@ document.addEventListener('DOMContentLoaded', () => {
             await fetchAndDisplayPhotos();
         } catch (error) {
             console.error('Ошибка:', error);
-            alert('Не удалось загрузить файл.');
+            alert(window.t('failedToUpload'));
         }
+    });
+
+    window.addEventListener('languageLoaded', () => {
+        fetchAndDisplayPhotos();
     });
 
     // --- Инициализация ---

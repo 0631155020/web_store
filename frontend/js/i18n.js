@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const languageSwitcher = document.querySelector('.language-switcher-container');
-    let currentLanguage = 'ua'; // Default language
+
+    // Load saved language or default to 'ua'
+    let currentLanguage = localStorage.getItem('language') || 'ua';
+    window.currentLanguage = currentLanguage;
 
     if (languageSwitcher) {
         const currentLang = languageSwitcher.querySelector('.current-lang');
@@ -15,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         langOptions.forEach(option => {
             option.addEventListener('click', function() {
                 const lang = this.getAttribute('data-lang');
+                localStorage.setItem('language', lang); // Save selected language
                 loadLanguage(lang);
                 activeLangDisplay.textContent = lang.toUpperCase();
                 langDropdown.classList.remove('show');
@@ -28,6 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+
+        // Init active lang display on load
+        if (activeLangDisplay) {
+            activeLangDisplay.textContent = currentLanguage.toUpperCase();
+        }
     }
 
     async function loadLanguage(lang) {
@@ -38,9 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             const translations = await response.json();
+            window.translations = translations; // Expose translations globally
+            window.currentLanguage = lang;
+
             applyTranslations(translations);
-            currentLanguage = lang;
             updateLanguageSwitcher();
+
+            // Dispatch event to let other components know translations are ready
+            window.dispatchEvent(new Event('languageLoaded'));
         } catch (error) {
             console.error('Error loading language file:', error);
         }
@@ -57,6 +71,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+
+        // Need to update the currency dynamically where it's hardcoded in HTML
+        const currencyElements = document.querySelectorAll('.currency-display');
+        currencyElements.forEach(el => {
+             el.textContent = translations['currency'] || 'UAH';
+        });
     }
 
     function updateLanguageSwitcher() {
@@ -69,7 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
     // Load default language
     loadLanguage(currentLanguage);
 });
+
+// Helper function to get translation
+window.t = function(key) {
+    if (window.translations && window.translations[key]) {
+        return window.translations[key];
+    }
+    return key; // Fallback to key if translation not found
+};

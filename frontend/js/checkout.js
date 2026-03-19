@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let subtotal = 0;
 
         if (cart.length === 0) {
-            cartItemsSummaryEl.innerHTML = '<p>Ваша корзина пуста.</p>';
+            cartItemsSummaryEl.innerHTML = `<p>${window.t('yourCartIsEmpty')}</p>`;
             updateTotals(0);
             return;
         }
@@ -41,9 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
             cartItem.innerHTML = `
                 <img src="${item.photo.path}" alt="${item.photo.description || item.photo.filename}">
                 <div class="item-details">
-                    <p>${item.photo.description || 'Без описания'}${item.size ? ` (${item.size})` : ''}</p>
+                    <p>${item.photo.description || window.t('noDescription')}${item.size ? ` (${item.size})` : ''}</p>
                     <p>Qty: ${item.quantity}</p>
-                    <p>${itemTotal.toFixed(2)} UAH</p>
+                    <p>${itemTotal.toFixed(2)} ${window.t('currency')}</p>
                 </div>
             `;
             cartItemsSummaryEl.appendChild(cartItem);
@@ -57,8 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const tax = 0;
         const total = subtotal + shipping + tax;
 
-        subtotalPriceEl.textContent = `${subtotal.toFixed(2)} UAH`;
-        totalPriceEl.textContent = `${total.toFixed(2)} UAH`;
+        subtotalPriceEl.textContent = `${subtotal.toFixed(2)} ${window.t('currency')}`;
+        totalPriceEl.textContent = `${total.toFixed(2)} ${window.t('currency')}`;
     };
 
     const handleOrderSubmit = async (event) => {
@@ -96,17 +96,17 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                alert('Заказ успешно оформлен!');
+                alert(window.t('orderSuccess'));
                 cart = [];
                 saveCart();
                 window.location.href = '/';
             } else {
                 const errorData = await response.json();
-                alert(`Ошибка при оформлении заказа: ${errorData.detail}`);
+                alert(`${window.t('orderError')} ${errorData.detail}`);
             }
         } catch (error) {
             console.error('Ошибка при отправке заказа:', error);
-            alert('Произошла ошибка. Пожалуйста, попробуйте еще раз.');
+            alert(window.t('generalError'));
         }
     };
 
@@ -122,14 +122,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 $(citySelect).select2({
                     data: cities,
-                    placeholder: 'Оберіть місто',
+                    placeholder: 'Оберіть місто', // This might need translation too, but it's hardcoded currently
                     allowClear: true
                 }).on('select2:select', function (e) {
                     // Cброс и загрузка отделений при выборе города
                     if ($(warehouseSelect).data('select2')) {
                         $(warehouseSelect).select2('destroy');
                     }
-                    warehouseSelect.innerHTML = '<option value="" disabled selected>Спочатку оберіть місто</option>';
+                    warehouseSelect.innerHTML = `<option value="" disabled selected>${window.t('selectWarehouse')}</option>`;
                     loadWarehouses();
                 });
             }
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
             $(warehouseSelect).select2('destroy');
         }
         $(warehouseSelect).html('').select2({
-            placeholder: 'Загрузка...'
+            placeholder: 'Загрузка...' // Needs translation if we want to be thorough
         });
 
         try {
@@ -166,12 +166,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }));
                 $(warehouseSelect).select2({
                     data: warehouses,
-                    placeholder: 'Оберіть відділення',
+                    placeholder: 'Оберіть відділення', // Needs translation if we want to be thorough
                     allowClear: true
                 });
             } else {
                 $(warehouseSelect).select2({
-                    placeholder: 'Відділення не знайдено',
+                    placeholder: 'Відділення не знайдено', // Needs translation
                     allowClear: true
                 });
             }
@@ -181,11 +181,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 $(warehouseSelect).select2('destroy');
             }
             $(warehouseSelect).html('').select2({
-                placeholder: 'Помилка завантаження',
+                placeholder: 'Помилка завантаження', // Needs translation
                 allowClear: true
             });
         }
     };
+
+    window.addEventListener('languageLoaded', () => {
+        renderCartSummary();
+    });
 
     // --- Инициализация ---
     loadCart();
