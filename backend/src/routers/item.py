@@ -88,7 +88,6 @@ async def create_order(order: OrderSchema, background_tasks: BackgroundTasks, db
 
     new_order = Order(
         id=order_id,
-        email=order.email,
         firstName=order.firstName,
         lastName=order.lastName,
         phone=order.phone,
@@ -103,7 +102,7 @@ async def create_order(order: OrderSchema, background_tasks: BackgroundTasks, db
         new_item = OrderItem(
             id=str(uuid.uuid4()),
             order_id=order_id,
-            photo_id=item.photo_id,
+            name=item.name,
             quantity=item.quantity,
             size=item.size
         )
@@ -113,17 +112,16 @@ async def create_order(order: OrderSchema, background_tasks: BackgroundTasks, db
 
     detailed_items = []
     for item in order.items:
-        photo = db.query(PhotoDB).filter(PhotoDB.id == item.photo_id).first()
-        if photo:
-            detailed_items.append({
-                "name": photo.name,
-                "quantity": item.quantity,
-                "size": item.size
-            })
+        # photo = db.query(PhotoDB).filter(PhotoDB.id == item.name).first()
+        # if photo:
+        detailed_items.append({
+            "name": item.name,
+            "quantity": item.quantity,
+            "size": item.size
+        })
 
     order_details = {
         "id": new_order.id,
-        "email": new_order.email,
         "firstName": new_order.firstName,
         "lastName": new_order.lastName,
         "address": new_order.address,

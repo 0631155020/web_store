@@ -33,7 +33,6 @@ async def send_telegram_notification(order_details: dict):
     message = (
         f"<b>New Order Received!</b>\n"
         f"<b>Order ID:</b> {order_details['id']}\n"
-        f"<b>Email:</b> {order_details['email']}\n"
         f"<b>Name:</b> {order_details['firstName']} {order_details['lastName']}\n"
         f"<b>Phone:</b> {order_details['phone']}\n"
         f"<b>Messenger:</b> {order_details.get('messenger', 'N/A')}\n"

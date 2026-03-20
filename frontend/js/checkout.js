@@ -77,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(deliveryForm);
         const orderData = {
-            //email: formData.get('email'),
             firstName: formData.get('firstName'),
             lastName: formData.get('lastName'),
             phone: formData.get('phone'),
@@ -91,7 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 warehouseRef: formData.get('novaPoshtaWarehouse'),
             },
             items: cart.map(item => ({
-                photo_id: item.photo.id,
+                // photo_id: item.photo.id,
+                name: item.photo.name,
                 quantity: item.quantity,
                 size: item.size
             }))

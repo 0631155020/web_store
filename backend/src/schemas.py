@@ -16,7 +16,7 @@ class Photo(BaseModel):
         orm_mode = True
 
 class OrderItemSchema(BaseModel):
-    photo_id: str
+    name: str
     quantity: int
     size: Optional[str] = None
 

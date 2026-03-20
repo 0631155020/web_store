@@ -32,6 +32,6 @@ class OrderItem(Base):
     __tablename__ = "order_items"
     id = Column(String, primary_key=True, index=True)
     order_id = Column(String)
-    photo_id = Column(String)
+    name = Column(String)
     quantity = Column(Integer)
     size = Column(String, nullable=True)
