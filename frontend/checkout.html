@@ -61,12 +61,35 @@
                 </div>
                 <input type="tel" name="phone" placeholder="Phone Number*" required data-i18n-key="phoneNumber">
 
-                <select name="messenger" required data-i18n-key="messenger">
+                <!-- <select name="messenger" required data-i18n-key="messenger">
                     <option value="" disabled selected>Preferred Messenger</option>
                     <option value="telegram">Telegram</option>
                     <option value="viber">Viber</option>
                     <option value="whatsapp">WhatsApp</option>
-                </select>
+                </select> -->
+
+                <div class="messenger-selection">
+                    <fieldset>
+                        <legend data-i18n-key="preferredMessenger">Preferred Messenger</legend>
+                        
+                        <div class="messenger-options">
+                            <div class="option-group">
+                                <input type="radio" id="tg" name="messenger" value="telegram" checked>
+                                <label for="tg">Telegram</label>
+                            </div>
+
+                            <div class="option-group">
+                                <input type="radio" id="vb" name="messenger" value="viber">
+                                <label for="vb">Viber</label>
+                            </div>
+
+                            <div class="option-group">
+                                <input type="radio" id="wa" name="messenger" value="whatsapp">
+                                <label for="wa">WhatsApp</label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
 
                 <div class="delivery-section">
                     <h4 data-i18n-key="deliveryMethod">Способ доставки</h4>

@@ -7,6 +7,30 @@
     font-family: 'Elms Sans', Arial, sans-serif;
 }
 
+/* styles for the messenger options */
+
+.messenger-options {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.option-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+fieldset {
+    border: none;
+    padding: 0;
+}
+
+legend {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
 
 main {
     max-width: 1200px;
