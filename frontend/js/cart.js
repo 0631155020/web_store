@@ -72,6 +72,11 @@ const updateCartView = () => {
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
         const itemTotal = parseFloat(item.photo.price) * item.quantity;
+
+        const descriptionHtml = item.photo.description
+            ? item.photo.description
+            : (item.photo.filename ? item.photo.filename : `<span data-i18n-key="noDescription">Без описания</span>`);
+
         cartItem.innerHTML = `
             <img src="${item.photo.path}" alt="${item.photo.description}" class="cart-item-image">
             <span>${item.photo.name || item.photo.description || item.photo.filename}${item.size ? ` (${item.size})` : ''}</span>
@@ -81,13 +86,17 @@ const updateCartView = () => {
                 <button class="increase-quantity-btn" data-id="${item.photo.id}" data-size="${item.size}">+</button>
             </span>
             <span>${itemTotal.toFixed(2)} UAH</span>
-            <button class="remove-all-btn" data-id="${item.photo.id}" data-size="${item.size}">Remove All</button>
+            <button class="remove-all-btn" data-id="${item.photo.id}" data-size="${item.size}" data-i18n-key="removeAll">Remove All</button>
         `;
         cartItems.appendChild(cartItem);
         total += itemTotal;
     });
 
     cartTotal.textContent = total.toFixed(2);
+
+    if (typeof window.applyTranslations === 'function') {
+        window.applyTranslations();
+    }
 
     // Attach event listeners to the new buttons in the cart
     document.querySelectorAll('.increase-quantity-btn').forEach(button => {
