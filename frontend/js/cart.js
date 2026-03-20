@@ -74,7 +74,7 @@ const updateCartView = () => {
         const itemTotal = parseFloat(item.photo.price) * item.quantity;
         cartItem.innerHTML = `
             <img src="${item.photo.path}" alt="${item.photo.description}" class="cart-item-image">
-            <span>${item.photo.description || item.photo.filename}${item.size ? ` (${item.size})` : ''}</span>
+            <span>${item.photo.name || item.photo.description || item.photo.filename}${item.size ? ` (${item.size})` : ''}</span>
             <span class="cart-item-controls">
                 <button class="decrease-quantity-btn" data-id="${item.photo.id}" data-size="${item.size}">-</button>
                 <span class="quantity">x${item.quantity}</span>
