@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (product.sizes && product.sizes.length > 0) {
             const sizeLabel = document.createElement('p');
             sizeLabel.textContent = 'Select Size:';
+            sizeLabel.setAttribute('data-i18n-key', 'selectSize');
             sizeSelectorContainer.appendChild(sizeLabel);
 
             const sizeSelector = document.createElement('div');
@@ -106,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const addToCartBtn = document.createElement('button');
         addToCartBtn.className = 'add-to-cart-btn';
         addToCartBtn.textContent = 'Add to Cart';
+        addToCartBtn.setAttribute('data-i18n-key', 'addToCart');
         addToCartBtn.addEventListener('click', () => {
             const selectedSizeEl = document.querySelector(`input[name="size-${product.id}"]:checked`);
             const selectedSize = selectedSizeEl ? selectedSizeEl.value : null;
@@ -130,6 +132,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         productDetailContainer.appendChild(galleryContainer);
         productDetailContainer.appendChild(infoContainer);
+
+        // Apply translations to the newly generated DOM elements
+        if (typeof window.applyTranslations === 'function') {
+            window.applyTranslations();
+        }
     };
 
     // --- Initialization ---

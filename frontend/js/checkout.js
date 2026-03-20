@@ -27,8 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let subtotal = 0;
 
         if (cart.length === 0) {
-            cartItemsSummaryEl.innerHTML = '<p>Ваша корзина пуста.</p>';
+            cartItemsSummaryEl.innerHTML = '<p data-i18n-key="cartEmpty">Ваша корзина пуста.</p>';
             updateTotals(0);
+            if (typeof window.applyTranslations === 'function') {
+                window.applyTranslations();
+            }
             return;
         }
 
@@ -38,11 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const cartItem = document.createElement('div');
             cartItem.className = 'cart-item';
+
+            const descriptionHtml = item.photo.description
+                ? item.photo.description
+                : `<span data-i18n-key="noDescription">Без описания</span>`;
+
             cartItem.innerHTML = `
                 <img src="${item.photo.path}" alt="${item.photo.description || item.photo.filename}">
                 <div class="item-details">
-                    <p>${item.photo.description || 'Без описания'}${item.size ? ` (${item.size})` : ''}</p>
-                    <p>Qty: ${item.quantity}</p>
+                    <p>${descriptionHtml}${item.size ? ` (${item.size})` : ''}</p>
+                    <p><span data-i18n-key="qty">Qty:</span> ${item.quantity}</p>
                     <p>${itemTotal.toFixed(2)} UAH</p>
                 </div>
             `;
@@ -50,6 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         updateTotals(subtotal);
+        if (typeof window.applyTranslations === 'function') {
+            window.applyTranslations();
+        }
     };
 
     const updateTotals = (subtotal) => {

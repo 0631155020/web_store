@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Галерея Одежды</title>
+    <title data-i18n-key="pageTitleAdmin">Галерея Одежды</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
@@ -23,10 +23,10 @@
                 <input type="text" id="nameInput" name="name" placeholder="Название" data-i18n-key="name">
                 <textarea id="itemDescriptionInput" name="item_description" placeholder="Описание товара" data-i18n-key="item_description"></textarea>
                 <input type="number" id="priceInput" name="price" placeholder="Цена" required min="0" step="0.01" data-i18n-key="price">
-                <label><input type="checkbox" name="sizes" value="S"> S</label>
-                <label><input type="checkbox" name="sizes" value="M"> M</label>
-                <label><input type="checkbox" name="sizes" value="L"> L</label>
-                <label><input type="checkbox" name="sizes" value="XL"> XL</label> 
+                <label><input type="checkbox" name="sizes" value="S"> <span data-i18n-key="sizeS">S</span></label>
+                <label><input type="checkbox" name="sizes" value="M"> <span data-i18n-key="sizeM">M</span></label>
+                <label><input type="checkbox" name="sizes" value="L"> <span data-i18n-key="sizeL">L</span></label>
+                <label><input type="checkbox" name="sizes" value="XL"> <span data-i18n-key="sizeXL">XL</span></label>
                 <button type="submit" data-i18n-key="upload">Загрузить</button>
             </form>
         </section>

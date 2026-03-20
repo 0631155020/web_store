@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function applyTranslations(translations) {
+        window.i18nTranslations = translations;
         document.querySelectorAll('[data-i18n-key]').forEach(element => {
             const key = element.getAttribute('data-i18n-key');
             if (translations[key]) {
@@ -58,6 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Expose a global method to translate newly created elements
+    window.applyTranslations = function() {
+        if (window.i18nTranslations) {
+            applyTranslations(window.i18nTranslations);
+        }
+    };
 
     function updateLanguageSwitcher() {
         document.querySelectorAll('.lang-option').forEach(option => {
