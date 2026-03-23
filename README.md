@@ -9,6 +9,8 @@
 
 This project demonstrates my proficiency in building responsive frontends, robust RESTful APIs, integrating third-party services (Telegram), and containerizing applications for reliable deployment.
 
+Also this application is deployed on Digital ocean and can be accessed on https://www.pajamas585.com/
+
 ---
 
 ## ✨ Key Features & Technical Highlights
