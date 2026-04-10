@@ -9,7 +9,7 @@ from src.path import FRONTEND_DIR
 from src import models
 
 
-models.Base.metadata.create_all(engine)
+# models.Base.metadata.create_all(engine)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
