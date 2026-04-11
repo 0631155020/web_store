@@ -47,12 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 : `<span data-i18n-key="noDescription">Без описания</span>`;
 
             cartItem.innerHTML = `
-                <img src="${item.photo.path}" alt="${item.photo.description || item.photo.filename}">
-                <div class="item-details">
-                    <p>${item.photo.name || 'Без описания'}${item.size ? ` (${item.size})` : ''}</p>
-                    <p>Qty: ${item.quantity}</p>
-                    <p>${itemTotal.toFixed(2)} UAH</p>
-                </div>
+                <img src="${item.photo.path}" alt="${item.photo.description || item.photo.filename}" class="cart-item-image">
+                <p class="cart-item-name">${item.photo.name || 'Без описания'}${item.size ? ` (${item.size})` : ''}</p>
+                <p class="cart-item-controls">Qty: ${item.quantity}</p>
+                <p class="cart-item-price">${itemTotal.toFixed(2)} UAH</p>
             `;
             cartItemsSummaryEl.appendChild(cartItem);
         });

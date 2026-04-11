@@ -79,13 +79,13 @@ const updateCartView = () => {
 
         cartItem.innerHTML = `
             <img src="${item.photo.path}" alt="${item.photo.description}" class="cart-item-image">
-            <span>${item.photo.name || item.photo.description || item.photo.filename}${item.size ? ` (${item.size})` : ''}</span>
+            <span class="cart-item-name">${item.photo.name || item.photo.description || item.photo.filename}${item.size ? ` (${item.size})` : ''}</span>
             <span class="cart-item-controls">
                 <button class="decrease-quantity-btn" data-id="${item.photo.id}" data-size="${item.size}">-</button>
                 <span class="quantity">x${item.quantity}</span>
                 <button class="increase-quantity-btn" data-id="${item.photo.id}" data-size="${item.size}">+</button>
             </span>
-            <span>${itemTotal.toFixed(2)} UAH</span>
+            <span class="cart-item-price">${itemTotal.toFixed(2)} UAH</span>
             <button class="remove-all-btn" data-id="${item.photo.id}" data-size="${item.size}" data-i18n-key="removeAll">Remove All</button>
         `;
         cartItems.appendChild(cartItem);
