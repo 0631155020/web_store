@@ -39,8 +39,8 @@ This application is built with a focus on user experience, performance, and main
 ## 🛠️ Technology Stack
 
 **Frontend:**
-*   HTML5, CSS3, JavaScript (ES6+)
-*   Custom i18n implementation for dynamic translation management
+*   HTML5, CSS3, React, Vite
+*   Custom i18n implementation integrated with React Context
 *   Responsive, custom-built CSS architecture (no heavy CSS frameworks)
 
 **Backend:**
@@ -124,10 +124,10 @@ To run this project locally, you will need Docker and Docker Compose installed o
 │   ├── requirements.txt      # Python dependencies
 │   └── alembic.ini           # Alembic configuration
 ├── frontend/                 # Client-side web application
-│   ├── css/                  # Stylesheets
-│   ├── js/                   # JavaScript logic (cart, UI interactions, API calls)
-│   ├── locales/              # i18n JSON translation files (en, ru, ua)
-│   └── *.html                # HTML templates
+│   ├── src/                  # React source code (components, pages, context, styles)
+│   ├── public/               # Static assets (photos, locales)
+│   ├── package.json          # Node dependencies
+│   └── vite.config.js        # Vite configuration
 ├── uploads/                  # Shared volume for user-uploaded product images
 ├── docker-compose.yml        # Orchestration configuration for all services
 └── README.md                 # Project documentation
@@ -147,3 +147,18 @@ While this project is a fully functional e-commerce foundation, I have designed 
 ---
 
 *Thank you for taking the time to review my work! I am eager to bring this level of dedication, technical skill, and product-focused mindset to a forward-thinking engineering team.*
+
+## Running the React Frontend
+
+To run the React frontend locally during development:
+
+1. Navigate to the frontend directory: `cd frontend`
+2. Install dependencies: `npm install`
+3. Start the development server: `npm run dev`
+
+The Vite development server is configured to proxy API requests to the backend at `http://localhost:8000`.
+
+To build the React application for production:
+1. Navigate to the frontend directory: `cd frontend`
+2. Run the build command: `npm run build`
+3. This will generate static files in `frontend/dist` which can be served by an Nginx container.

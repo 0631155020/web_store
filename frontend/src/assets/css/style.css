@@ -444,7 +444,7 @@ main {
 }
 
 #hero {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/static/photos/back.PNG");
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/photos/back.PNG");
     height: 90vh;
     background-position: right 0 top 25%;
     background-size: cover;
@@ -474,7 +474,7 @@ main {
 }
 
 #hero button {
-    background-image: url(/static/photos/button.png);
+    background-image: url(/photos/button.png);
     background-color: transparent;
     color: white;
     border: none;
