@@ -7,7 +7,8 @@ from src.routers import main_router
 from contextlib import asynccontextmanager
 from src.path import FRONTEND_DIR
 from src import models
-
+from fastapi.middleware.cors import CORSMiddleware
+import os
 
 # models.Base.metadata.create_all(engine)
 
@@ -18,6 +19,13 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
+# Allow CORS for React development server
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://localhost:8000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(main_router)
