@@ -51,12 +51,47 @@ document.addEventListener('DOMContentLoaded', () => {
         const galleryContainer = document.createElement('div');
         galleryContainer.className = 'product-gallery';
 
+        const mainImageContainer = document.createElement('div');
+        mainImageContainer.className = 'main-image-container';
+
         const mainImage = document.createElement('img');
         mainImage.className = 'main-product-image';
-        mainImage.src = product.path;
+        mainImage.id = 'mainProductImage';
+        mainImage.src = product.path || '';
         mainImage.alt = product.name;
 
-        galleryContainer.appendChild(mainImage);
+        mainImageContainer.appendChild(mainImage);
+        galleryContainer.appendChild(mainImageContainer);
+
+        // Thumbnails
+        if (product.images && product.images.length > 0) {
+            const thumbnailsContainer = document.createElement('div');
+            thumbnailsContainer.className = 'thumbnails-container';
+
+            product.images.sort((a,b) => a.sort_order - b.sort_order).forEach(img => {
+                const thumb = document.createElement('div');
+                thumb.className = 'thumbnail';
+                if (img.image_url === product.path) {
+                    thumb.classList.add('active');
+                }
+
+                const thumbImg = document.createElement('img');
+                thumbImg.src = img.image_url;
+                thumbImg.alt = 'Thumbnail';
+
+                thumb.appendChild(thumbImg);
+
+                thumb.addEventListener('click', () => {
+                    mainImage.src = img.image_url;
+                    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                    thumb.classList.add('active');
+                });
+
+                thumbnailsContainer.appendChild(thumb);
+            });
+
+            galleryContainer.appendChild(thumbnailsContainer);
+        }
 
         // Right side: Product Info
         const infoContainer = document.createElement('div');

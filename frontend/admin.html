@@ -16,8 +16,9 @@
         <section class="upload-form">
             <h2>Загрузить новое фото</h2>
             <form id="uploadForm">
-                <label for="fileInput" data-i18n-key="mainPhoto">Основное фото:</label>
-                <input type="file" id="fileInput" name="file" accept="image/*" required>
+                <label for="fileInput" data-i18n-key="mainPhoto">Фото товара (одно или несколько):</label>
+                <input type="file" id="fileInput" name="file" accept="image/*" multiple required>
+                <div id="imagePreviewContainer" class="image-preview-container"></div>
                 <label for="sizeTablePhotoInput" data-i18n-key="sizeTablePhoto">Фото таблицы размеров (необязательно):</label>
                 <input type="file" id="sizeTablePhotoInput" name="size_table_photo" accept="image/*">
                 <input type="text" id="nameInput" name="name" placeholder="Название" data-i18n-key="name">
@@ -39,6 +40,45 @@
             </div>
         </section>
     </main>
+
+    <!-- Modal for Editing Product -->
+    <div id="editProductModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeEditModal">&times;</span>
+            <h2 data-i18n-key="editProduct">Редактировать товар</h2>
+            <form id="editProductForm">
+                <input type="hidden" id="editProductId">
+
+                <input type="text" id="editNameInput" name="name" placeholder="Название" data-i18n-key="name">
+                <textarea id="editItemDescriptionInput" name="item_description" placeholder="Описание товара" data-i18n-key="item_description"></textarea>
+                <input type="number" id="editPriceInput" name="price" placeholder="Цена" required min="0" step="0.01" data-i18n-key="price">
+
+                <div class="sizes-container">
+                    <label><input type="checkbox" name="edit_sizes" value="S"> S</label>
+                    <label><input type="checkbox" name="edit_sizes" value="M"> M</label>
+                    <label><input type="checkbox" name="edit_sizes" value="L"> L</label>
+                    <label><input type="checkbox" name="edit_sizes" value="XL"> XL</label>
+                    <label><input type="checkbox" name="edit_sizes" value="XXL"> XXL</label>
+                </div>
+
+                <h3>Изображения товара</h3>
+                <div id="editImagesContainer" class="edit-images-container">
+                    <!-- Current images will go here -->
+                </div>
+
+                <div class="add-new-images">
+                    <label for="editNewImagesInput">Добавить новые фото:</label>
+                    <input type="file" id="editNewImagesInput" name="new_images" accept="image/*" multiple>
+                    <button type="button" id="uploadNewImagesBtn">Загрузить</button>
+                </div>
+
+                <label for="editSizeTablePhotoInput" data-i18n-key="sizeTablePhoto">Новое фото таблицы размеров:</label>
+                <input type="file" id="editSizeTablePhotoInput" name="size_table_photo" accept="image/*">
+
+                <button type="submit" data-i18n-key="save">Сохранить</button>
+            </form>
+        </div>
+    </div>
 
     <script src="/static/js/admin.js"></script>
     <script src="/static/js/i18n.js"></script>
